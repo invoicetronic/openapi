@@ -6,7 +6,7 @@ info:
     name: Invoicetronic
     url: https://invoicetronic.com
     email: support@invoicetronic.com
-  version: v1
+  version: 1.0.0
   x-logo:
     url: https://gestionaleamica.com/assets/img/Logo_Amica_Scritta.png
     altText: 'Amica: tutto il software che serve per gestire la tua azienda'
