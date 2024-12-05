@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Italian Invoice API
-  description: "The Italian Invoice API is a RESTful API that allows you to send and receive invoices through the\nItalian [Servizio di Interscambio (SDI)][1] (Interchange Service). The API is designed by Invoicetronic to be simple\nand easy to use, abstracting away the Interchange Service's complexity while still providing complete control over the\ninvoice send/receive process. The API also provides advanced features and a rich toolchain, such as invoice validation,\nmultiple upload methods, webhooks, event logs, CORS support, client SDKs for commonly used languages, and CLI tools.\n\nFor more information, see:\n\n- [Invoicetronic website][2]\n- [Invoice API reference][3]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/\n[3]: https://api.invoicetronic.com/invoice/v1/docs\n"
+  title: Italian eInvoice API
+  description: "The Italian eInvoice API is a RESTful API that allows you to send and receive invoices through the\nItalian [Servizio di Interscambio (SDI)][1] (Interchange Service). The API is designed by Invoicetronic to be simple\nand easy to use, abstracting away the Interchange Service's complexity while still providing complete control over the\ninvoice send/receive process. The API also provides advanced features and a rich toolchain, such as invoice validation,\nmultiple upload methods, webhooks, event logs, CORS support, client SDKs for commonly used languages, and CLI tools.\n\nFor more information, see:\n\n- [Invoicetronic website][2]\n- [Invoice API reference][3]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/\n[3]: https://api.invoicetronic.com/invoice/v1/docs\n"
   contact:
     name: Invoicetronic
     url: https://invoicetronic.com
