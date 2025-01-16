@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Italian eInvoice API
-  description: "The Italian eInvoice API is a RESTful API that allows you to send and receive invoices through the\nItalian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed by Invoicetronic to be simple\nand easy to use, abstracting away SDI complexity while still providing complete control over the\ninvoice send/receive process. The API also provides advanced features and a rich toolchain, such as invoice validation,\nmultiple upload methods, webhooks, event logs, CORS support, client SDKs for commonly used languages, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/"
+  description: "The Italian eInvoice API is a RESTful API that allows you to send and receive invoices through the\nItalian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed by Invoicetronic to be simple\nand easy to use, abstracting away SDI complexity while providing complete control over the\ninvoice send/receive process. The API also provides advanced features as encryption at rest, invoice validation,\nmultiple upload formats, webhooks, event logging, client SDKs for commonly used languages, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/"
   contact:
     name: Invoicetronic
     url: https://invoicetronic.com
@@ -16,11 +16,11 @@ paths:
       tags:
         - company
       summary: Get a company by id
-      description: Companies are the entities that send and receive invoices. At least one company is required in order to send and receive invoices.
+      description: "Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed. **You\ncan only receive invoices for existing companies**."
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -38,11 +38,11 @@ paths:
       tags:
         - company
       summary: Delete a company
-      description: Companies are the entities that send and receive invoices. At least one company is required in order to send and receive invoices.
+      description: "Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed. **You\ncan only receive invoices for existing companies**."
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -73,18 +73,18 @@ paths:
       tags:
         - company
       summary: List companies
-      description: Companies are the entities that send and receive invoices. At least one company is required in order to send and receive invoices.
+      description: "Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed. **You\ncan only receive invoices for existing companies**."
       parameters:
         - name: page
           in: query
-          description: Page number.
+          description: Page number. Defaults to 1.
           schema:
             type: integer
             format: int32
             default: 1
-        - name: pageSize
+        - name: page_size
           in: query
-          description: Items per page.
+          description: Items per page. Defaults to 50. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -110,7 +110,7 @@ paths:
       tags:
         - company
       summary: Add a company
-      description: Companies are the entities that send and receive invoices. At least one company is required in order to send and receive invoices.
+      description: "Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed. **You\ncan only receive invoices for existing companies**."
       requestBody:
         content:
           application/json:
@@ -140,7 +140,7 @@ paths:
       tags:
         - company
       summary: Update a company
-      description: Companies are the entities that send and receive invoices. At least one company is required in order to send and receive invoices.
+      description: "Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed. **You\ncan only receive invoices for existing companies**."
       requestBody:
         content:
           application/json:
@@ -175,7 +175,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -196,16 +196,54 @@ paths:
       summary: List events
       description: Every API operation is logged and can be retrieved here.
       parameters:
+        - name: company_id
+          in: query
+          description: Company id
+          schema:
+            type: integer
+            format: int32
+        - name: endpoint
+          in: query
+          schema:
+            type: string
+        - name: method
+          in: query
+          schema:
+            type: string
+        - name: api_verion
+          in: query
+          description: Api version
+          schema:
+            type: integer
+            format: int32
+        - name: status_code
+          in: query
+          description: Response status code
+          schema:
+            type: integer
+            format: int32
+        - name: date_created_from
+          in: query
+          description: UTC ISO 8601 (2024-11-29T12:34:56Z)
+          schema:
+            type: string
+            format: date-time
+        - name: date_created_to
+          in: query
+          description: UTC ISO 8601 (2024-11-29T12:34:56Z)
+          schema:
+            type: string
+            format: date-time
         - name: page
           in: query
-          description: Page number.
+          description: Page number. Defaults to 1.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page.
+          description: Items per page. Defaults to 50. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -236,7 +274,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -258,7 +296,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -293,7 +331,7 @@ paths:
       parameters:
         - name: company_id
           in: query
-          description: Company id.
+          description: Company id
           schema:
             type: integer
             format: int32
@@ -309,12 +347,12 @@ paths:
             type: boolean
         - name: committente
           in: query
-          description: VAT number or fiscal code.
+          description: Vat number or fiscal code.
           schema:
             type: string
         - name: prestatore
           in: query
-          description: VAT number or fiscal code.
+          description: Vat number or fiscal code.
           schema:
             type: string
         - name: file_name
@@ -365,14 +403,14 @@ paths:
             type: string
         - name: page
           in: query
-          description: Page number.
+          description: Page number. Defaults to 1.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page.
+          description: Items per page. Defaults to 50. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -403,7 +441,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -426,7 +464,7 @@ paths:
       parameters:
         - name: company_id
           in: query
-          description: Company id.
+          description: Company id
           schema:
             type: integer
             format: int32
@@ -437,12 +475,12 @@ paths:
             type: string
         - name: committente
           in: query
-          description: VAT number or fiscal code.
+          description: Vat number or fiscal code.
           schema:
             type: string
         - name: prestatore
           in: query
-          description: VAT number or fiscal code.
+          description: Vat number or fiscal code.
           schema:
             type: string
         - name: file_name
@@ -493,14 +531,14 @@ paths:
             type: string
         - name: page
           in: query
-          description: Page number.
+          description: Page number. Defaults to 1.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page.
+          description: Items per page. Defaults to 50. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -534,6 +572,17 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: signature
+          in: query
+          description: Whether to digitally sign the document.
+          schema:
+            enum:
+              - None
+              - Apply
+              - Force
+              - Auto
+            type: string
+            default: Auto
       requestBody:
         content:
           application/json:
@@ -572,6 +621,17 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: signature
+          in: query
+          description: Whether to digitally sign the document.
+          schema:
+            enum:
+              - None
+              - Apply
+              - Force
+              - Auto
+            type: string
+            default: Auto
       requestBody:
         content:
           application/xml:
@@ -610,6 +670,17 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: signature
+          in: query
+          description: Whether to digitally sign the document.
+          schema:
+            enum:
+              - None
+              - Apply
+              - Force
+              - Auto
+            type: string
+            default: Auto
       requestBody:
         content:
           multipart/form-data:
@@ -658,6 +729,17 @@ paths:
           schema:
             type: boolean
             default: false
+        - name: signature
+          in: query
+          description: Whether to digitally sign the document.
+          schema:
+            enum:
+              - None
+              - Apply
+              - Force
+              - Auto
+            type: string
+            default: Auto
       requestBody:
         content:
           application/json:
@@ -810,7 +892,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -833,7 +915,7 @@ paths:
       parameters:
         - name: company_id
           in: query
-          description: Company id.
+          description: Company id
           schema:
             type: integer
             format: int32
@@ -844,7 +926,7 @@ paths:
             type: string
         - name: unread
           in: query
-          description: Only unread items.
+          description: Unread items only.
           schema:
             type: boolean
         - name: send_id
@@ -888,20 +970,20 @@ paths:
             format: date-time
         - name: date_sent_to
           in: query
-          description: UTC ISO 8601 format (2024-11-29T12:34:56Z)
+          description: UTC ISO 8601 (2024-11-29T12:34:56Z)
           schema:
             type: string
             format: date-time
         - name: page
           in: query
-          description: Page number.
+          description: Page number. Defaults to 1.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page.
+          description: Items per page. Defaults to 50. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -932,7 +1014,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -954,7 +1036,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -989,14 +1071,14 @@ paths:
       parameters:
         - name: page
           in: query
-          description: Page number.
+          description: Page number. Defaults to 1.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page.
+          description: Items per page. Defaults to 50. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -1086,7 +1168,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: Item id.
+          description: Item id
           required: true
           schema:
             type: integer
@@ -1108,14 +1190,14 @@ paths:
       parameters:
         - name: page
           in: query
-          description: Page number.
+          description: Page number. Defaults to 1.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page.
+          description: Items per page. Defaults to 50. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -1993,6 +2075,14 @@ components:
           type: integer
           description: 'Row version, for optimistic concurrency. It is set automatically.'
           format: int32
+        user_id:
+          type: integer
+          description: User id.
+          format: int32
+        api_key_id:
+          type: integer
+          description: Api key id.
+          format: int32
         company_id:
           type: integer
           description: Company id.
@@ -2026,26 +2116,14 @@ components:
           type: string
           description: Response error.
           nullable: true
-        request_body:
-          type: string
-          description: Request payload. It is guaranteed to be cyphered at rest.
-          nullable: true
-        response_body:
-          type: string
-          description: Response payload. It is guaranteed to be cyphered at rest.
-          nullable: true
         success:
           type: boolean
           description: Wether the request was successful.
           readOnly: true
-        user_id:
-          type: integer
-          description: User id.
-          format: int32
-        api_key_id:
-          type: integer
-          description: Api key id.
-          format: int32
+        response_body:
+          type: string
+          description: Response payload. It is guaranteed to be cyphered at rest.
+          nullable: true
       additionalProperties: false
     FatturaElettronicaBody:
       type: object
@@ -2290,9 +2368,19 @@ components:
             $ref: '#/components/schemas/DocumentData'
           description: 'The invoices included in the payload. This is set by the system, based on the xml content.'
           nullable: true
+        encoding:
+          enum:
+            - Xml
+            - Base64
+          type: string
+          description: Whether the payload is Base64 encoded or a plain XML (text).
         is_read:
           type: boolean
           description: Wether the invoice has been read at least once.
+        message_id:
+          type: string
+          description: SDI message id.
+          nullable: true
       additionalProperties: false
     ScontoMaggiorazione:
       type: object
@@ -2418,12 +2506,20 @@ components:
             $ref: '#/components/schemas/DocumentData'
           description: 'The invoices included in the payload. This is set by the system, based on the xml content.'
           nullable: true
+        encoding:
+          enum:
+            - Xml
+            - Base64
+          type: string
+          description: Whether the payload is Base64 encoded or a plain XML (text).
         meta_data:
           type: object
           additionalProperties:
             type: string
           description: 'Optional metadata, as json.'
           nullable: true
+        company:
+          $ref: '#/components/schemas/Company'
       additionalProperties: false
     StabileOrganizzazione:
       type: object
@@ -2602,14 +2698,6 @@ components:
           type: integer
           description: Status code.
           format: int32
-        request_body:
-          type: string
-          description: Webhook request body.
-          nullable: true
-        response_body:
-          type: string
-          description: Webhook response body.
-          nullable: true
         date_time:
           type: string
           description: Date and time of the request.
