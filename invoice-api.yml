@@ -1,17 +1,17 @@
 openapi: 3.0.1
 info:
-  title: Italian eInvoice API
-  description: "The Italian eInvoice API is a RESTful API that allows you to send and receive invoices through the\nItalian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed by Invoicetronic to be simple\nand easy to use, abstracting away SDI complexity while providing complete control over the\ninvoice send/receive process. The API also provides advanced features as encryption at rest, invoice validation,\nmultiple upload formats, webhooks, event logging, client SDKs for commonly used languages, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/"
+  title: Italian eInvoice API v1
+  description: "The [Italian eInvoice API][2] is a RESTful API that allows you to send and receive invoices through the Italian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed by Invoicetronic to be simple and easy to use, abstracting away SDI complexity while providing complete control over the invoice send/receive process. The API also provides advanced features as encryption at rest, invoice validation, multiple upload formats, webhooks, event logging, client SDKs for commonly used languages, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/"
   contact:
     name: Invoicetronic
     url: https://invoicetronic.com
     email: support@invoicetronic.com
-  version: 1.0.0
+  version: '1'
   x-logo:
     url: https://gestionaleamica.com/assets/img/Logo_Amica_Scritta.png
     altText: 'Amica: tutto il software che serve per gestire la tua azienda'
 paths:
-  '/invoice/v1/company/{id}':
+  '/company/{id}':
     get:
       tags:
         - company
@@ -68,7 +68,7 @@ paths:
                 $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
-  /invoice/v1/company:
+  /company:
     get:
       tags:
         - company
@@ -89,6 +89,11 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: sort
+          in: query
+          description: Sort by field. Prefix with '-' for descending order.
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -166,7 +171,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  '/invoice/v1/log/{id}':
+  '/log/{id}':
     get:
       tags:
         - log
@@ -189,7 +194,7 @@ paths:
                 $ref: '#/components/schemas/Event'
         '404':
           description: Not Found
-  /invoice/v1/log:
+  /log:
     get:
       tags:
         - log
@@ -248,6 +253,31 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: sort
+          in: query
+          description: Sort by field. Prefix with '-' for descending order.
+          schema:
+            type: string
+        - name: query
+          in: query
+          schema:
+            type: string
+        - name: success
+          in: query
+          schema:
+            type: boolean
+        - name: date_time_from
+          in: query
+          description: Date and time of the event
+          schema:
+            type: string
+            format: date-time
+        - name: date_time_to
+          in: query
+          description: Date and time of the event
+          schema:
+            type: string
+            format: date-time
       responses:
         '200':
           description: OK
@@ -265,7 +295,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  '/invoice/v1/receive/{id}':
+  '/receive/{id}':
     get:
       tags:
         - receive
@@ -322,7 +352,7 @@ paths:
                 $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
-  /invoice/v1/receive:
+  /receive:
     get:
       tags:
         - receive
@@ -415,6 +445,11 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: sort
+          in: query
+          description: Sort by field. Prefix with '-' for descending order.
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -432,7 +467,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  '/invoice/v1/send/{id}':
+  '/send/{id}':
     get:
       tags:
         - send
@@ -455,7 +490,7 @@ paths:
                 $ref: '#/components/schemas/Send'
         '404':
           description: Not Found
-  /invoice/v1/send:
+  /send:
     get:
       tags:
         - send
@@ -543,6 +578,11 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: sort
+          in: query
+          description: Sort by field. Prefix with '-' for descending order.
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -608,7 +648,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  /invoice/v1/send/xml:
+  /send/xml:
     post:
       tags:
         - send
@@ -657,7 +697,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  /invoice/v1/send/files:
+  /send/file:
     post:
       tags:
         - send
@@ -686,16 +726,14 @@ paths:
           multipart/form-data:
             schema:
               required:
-                - files
+                - file
               type: object
               properties:
-                files:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
+                file:
+                  type: string
+                  format: binary
             encoding:
-              files:
+              file:
                 style: form
       responses:
         '201':
@@ -716,7 +754,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  /invoice/v1/send/json:
+  /send/json:
     post:
       tags:
         - send
@@ -765,7 +803,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  /invoice/v1/send/validate:
+  /send/validate:
     post:
       tags:
         - send
@@ -792,7 +830,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  /invoice/v1/send/validate/xml:
+  /send/validate/xml:
     post:
       tags:
         - send
@@ -819,7 +857,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  /invoice/v1/send/validate/files:
+  /send/validate/files:
     post:
       tags:
         - send
@@ -856,7 +894,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  /invoice/v1/send/validate/json:
+  /send/validate/json:
     post:
       tags:
         - send
@@ -883,7 +921,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  '/invoice/v1/update/{id}':
+  '/update/{id}':
     get:
       tags:
         - update
@@ -906,7 +944,7 @@ paths:
                 $ref: '#/components/schemas/Update'
         '404':
           description: Not Found
-  /invoice/v1/update:
+  /update:
     get:
       tags:
         - update
@@ -988,6 +1026,11 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: sort
+          in: query
+          description: Sort by field. Prefix with '-' for descending order.
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -1005,7 +1048,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  '/invoice/v1/webhook/{id}':
+  '/webhook/{id}':
     get:
       tags:
         - webhook
@@ -1062,7 +1105,7 @@ paths:
                 $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
-  /invoice/v1/webhook:
+  /webhook:
     get:
       tags:
         - webhook
@@ -1083,6 +1126,11 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: sort
+          in: query
+          description: Sort by field. Prefix with '-' for descending order.
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -1160,7 +1208,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
-  '/invoice/v1/webhookhistory/{id}':
+  '/webhookhistory/{id}':
     get:
       tags:
         - webhook
@@ -1182,7 +1230,7 @@ paths:
                 $ref: '#/components/schemas/WebHookHistory'
         '404':
           description: Not Found
-  /invoice/v1/webhookhistory:
+  /webhookhistory:
     get:
       tags:
         - webhook
@@ -1202,6 +1250,11 @@ paths:
             type: integer
             format: int32
             default: 100
+        - name: sort
+          in: query
+          description: Sort by field. Prefix with '-' for descending order.
+          schema:
+            type: string
       responses:
         '200':
           description: OK
