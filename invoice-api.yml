@@ -857,27 +857,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-  /send/validate/files:
+  /send/validate/file:
     post:
       tags:
         - send
-      summary: Validate an invoice by file
+      summary: Validate an invoice file
       description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
       requestBody:
         content:
           multipart/form-data:
             schema:
               required:
-                - files
+                - file
               type: object
               properties:
-                files:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
+                file:
+                  type: string
+                  format: binary
             encoding:
-              files:
+              file:
                 style: form
       responses:
         '204':
