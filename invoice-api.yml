@@ -2726,6 +2726,18 @@ components:
         is_read:
           type: boolean
           description: Wether the item has been read at least once.
+        meta_data:
+          type: object
+          additionalProperties:
+            type: string
+          description: Metadata from the Send item this update refers to.
+          nullable: true
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentData'
+          description: Invoice references from the Send item this update refers to.
+          nullable: true
       additionalProperties: false
     WebHook:
       type: object
