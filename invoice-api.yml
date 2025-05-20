@@ -622,6 +622,7 @@ paths:
               - Force
               - Auto
             type: string
+            description: Definisce le modalità di firma per le fatture.
             default: Auto
       requestBody:
         content:
@@ -671,6 +672,7 @@ paths:
               - Force
               - Auto
             type: string
+            description: Definisce le modalità di firma per le fatture.
             default: Auto
       requestBody:
         content:
@@ -720,6 +722,7 @@ paths:
               - Force
               - Auto
             type: string
+            description: Definisce le modalità di firma per le fatture.
             default: Auto
       requestBody:
         content:
@@ -777,6 +780,7 @@ paths:
               - Force
               - Auto
             type: string
+            description: Definisce le modalità di firma per le fatture.
             default: Auto
       requestBody:
         content:
@@ -971,6 +975,11 @@ paths:
         - name: identifier
           in: query
           description: SDI identifier.
+          schema:
+            type: string
+        - name: prestatore
+          in: query
+          description: Vat number or fiscal code.
           schema:
             type: string
         - name: unread
@@ -2737,6 +2746,10 @@ components:
           items:
             $ref: '#/components/schemas/DocumentData'
           description: Invoice references from the Send item this update refers to.
+          nullable: true
+        prestatore:
+          type: string
+          description: Prestatore reference from the Send item this status refers to.
           nullable: true
       additionalProperties: false
     WebHook:
