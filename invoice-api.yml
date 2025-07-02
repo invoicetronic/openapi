@@ -77,14 +77,14 @@ paths:
       parameters:
         - name: page
           in: query
-          description: Page number. Defaults to 1.
+          description: Page number.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page. Defaults to 50. Cannot be greater than 200.
+          description: Items per page. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -241,14 +241,14 @@ paths:
             format: date-time
         - name: page
           in: query
-          description: Page number. Defaults to 1.
+          description: Page number.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page. Defaults to 50. Cannot be greater than 200.
+          description: Items per page. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -438,14 +438,14 @@ paths:
             type: boolean
         - name: page
           in: query
-          description: Page number. Defaults to 1.
+          description: Page number.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page. Defaults to 50. Cannot be greater than 200.
+          description: Items per page. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -576,14 +576,14 @@ paths:
             type: boolean
         - name: page
           in: query
-          description: Page number. Defaults to 1.
+          description: Page number.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page. Defaults to 50. Cannot be greater than 200.
+          description: Items per page. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -1044,14 +1044,14 @@ paths:
             format: date-time
         - name: page
           in: query
-          description: Page number. Defaults to 1.
+          description: Page number.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page. Defaults to 50. Cannot be greater than 200.
+          description: Items per page. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -1150,14 +1150,14 @@ paths:
             format: int32
         - name: page
           in: query
-          description: Page number. Defaults to 1.
+          description: Page number.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page. Defaults to 50. Cannot be greater than 200.
+          description: Items per page. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
@@ -1292,14 +1292,14 @@ paths:
       parameters:
         - name: page
           in: query
-          description: Page number. Defaults to 1.
+          description: Page number.
           schema:
             type: integer
             format: int32
             default: 1
         - name: page_size
           in: query
-          description: Items per page. Defaults to 50. Cannot be greater than 200.
+          description: Items per page. Cannot be greater than 200.
           schema:
             type: integer
             format: int32
