@@ -2,10 +2,11 @@ openapi: 3.0.1
 info:
   title: Invoicetronic API
   description: "The [Invoicetronic API][2] is a RESTful service that allows you to send and receive invoices through the Italian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed to be simple and easy to use, abstracting away SDI complexity while providing complete control over the invoice send/receive process. It provides advanced features as encryption at rest, multi-language pre-flight invoice validation, multiple upload formats, webhooks, event logging, client SDKs, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/"
+  termsOfService: https://invoicetronic.com/tos
   contact:
     name: Invoicetronic
     url: https://invoicetronic.com
-    email: support@invoicetronic.com
+    email: info@invoicetronic.com
   version: '1'
   x-logo:
     url: https://testapi.invoicetronic.com/assets/logomark-white.svg
@@ -309,6 +310,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: includePayload
+          in: query
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: OK
@@ -486,6 +492,11 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: includePayload
+          in: query
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: OK
@@ -495,6 +506,38 @@ paths:
                 $ref: '#/components/schemas/Send'
         '404':
           description: Not Found
+  '/send/{identifier}':
+    get:
+      tags:
+        - send
+      summary: Get a invoice by identifier
+      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      parameters:
+        - name: identifier
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: includePayload
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Send'
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemHttpResult'
   /send:
     get:
       tags:
