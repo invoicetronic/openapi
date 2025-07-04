@@ -1104,6 +1104,7 @@ paths:
           description: Sort by field. Prefix with '-' for descending order.
           schema:
             type: string
+            default: last_update
       responses:
         '200':
           description: OK
