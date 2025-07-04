@@ -1057,7 +1057,7 @@ paths:
               - Scartato
               - AccettatoDalDestinatario
               - RifiutatoDalDestinatario
-              - ImpossibilitaDiRecapito
+              - ImpossibilitàDiRecapito
               - DecorrenzaTermini
               - AttestazioneTrasmissioneFattura
             type: string
@@ -2787,7 +2787,7 @@ components:
             - Scartato
             - AccettatoDalDestinatario
             - RifiutatoDalDestinatario
-            - ImpossibilitaDiRecapito
+            - ImpossibilitàDiRecapito
             - DecorrenzaTermini
             - AttestazioneTrasmissioneFattura
           type: string
