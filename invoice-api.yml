@@ -9,8 +9,8 @@ info:
     email: info@invoicetronic.com
   version: '1'
   x-logo:
-    url: https://testapi.invoicetronic.com/assets/logomark-white.svg
-    altText: 'Amica: tutto il software che serve per gestire la tua azienda'
+    url: https://invoicetronic.com/assets/logomark-white.svg
+    altText: 'Invoicetronic: support electronic invoices in a snap'
 paths:
   '/company/{id}':
     get:
@@ -310,8 +310,9 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: includePayload
+        - name: include_payload
           in: query
+          description: Include payload in the response. Defaults to false.
           schema:
             type: boolean
             default: false
@@ -492,8 +493,9 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: includePayload
+        - name: include_payload
           in: query
+          description: Include payload in the response. Defaults to false.
           schema:
             type: boolean
             default: false
@@ -518,8 +520,9 @@ paths:
           required: true
           schema:
             type: string
-        - name: includePayload
+        - name: include_payload
           in: query
+          description: Include payload in the response. Defaults to false.
           schema:
             type: boolean
             default: false
@@ -1512,10 +1515,6 @@ components:
           type: string
           description: Name
           example: Mario Rossi Srl
-        counter:
-          type: integer
-          description: "Holds the last unique value used to generate a XML filename. This is automatically updated by the system \r\nwhen a raw XML file is uploaded. Normally, you do not need or want to change this value."
-          format: int32
       additionalProperties: false
       description: A company model.
     Contatti:
