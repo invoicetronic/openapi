@@ -23,6 +23,7 @@
     <Nullable>{{#useGenericHost}}enable{{/useGenericHost}}{{^useGenericHost}}annotations{{/useGenericHost}}</Nullable>{{/nrt}}
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -63,6 +64,7 @@
     {{/net60OrLater}}
     {{/validatable}}
     <None Include="../../README.md" Pack="true" PackagePath="\"/>
+    <None Include="../../icon.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
     
 
