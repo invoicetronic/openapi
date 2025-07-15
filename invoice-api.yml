@@ -7,6 +7,9 @@ info:
     name: Invoicetronic
     url: https://invoicetronic.com
     email: info@invoicetronic.com
+  license:
+    name: MIT
+    url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
   version: '1'
   x-logo:
     url: https://invoicetronic.com/assets/logomark-white.svg
