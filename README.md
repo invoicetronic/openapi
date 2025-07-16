@@ -13,4 +13,4 @@ We currently offer open source SDKs for the following languages: C#, Python, Go,
 
 ## Documentation
 
-The [Invoicetronic website](https://invoicetronic.com) contains a lot of useful guides and info that can help you with the most common issues that could arise while integrating our APIs and SDKs. Be sure to check it out!
+The [Invoicetronic Documentation](https://invoicetronic.com/docs/overview) contains a lot of useful guides and info that can help you with the most common issues that could arise while integrating our APIs and SDKs. Be sure to check it out!
