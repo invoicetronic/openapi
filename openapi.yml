@@ -2251,10 +2251,6 @@ components:
           type: string
           description: Request method.
           nullable: true
-        query:
-          type: string
-          description: Request query.
-          nullable: true
         endpoint:
           type: string
           description: API endpoint.
@@ -2275,10 +2271,19 @@ components:
           type: string
           description: Response error.
           nullable: true
+        resource_id:
+          type: integer
+          description: ID of the resource created or modified by this request.
+          format: int32
+          nullable: true
         success:
           type: boolean
           description: Wether the request was successful.
           readOnly: true
+        query:
+          type: string
+          description: 'Request query. Only used for internal logging, not sent to webhooks.'
+          nullable: true
         response_body:
           type: string
           description: Response payload. It is guaranteed to be cyphered at rest.
