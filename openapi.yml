@@ -11,9 +11,6 @@ info:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
   version: '1'
-  x-logo:
-    url: https://invoicetronic.com/assets/logomark-white.svg
-    altText: 'Invoicetronic: support electronic invoices in a snap'
 paths:
   '/company/{id}':
     get:
@@ -2220,6 +2217,9 @@ components:
       additionalProperties: false
       description: Validation error from the SDI.
     Event:
+      required:
+        - endpoint
+        - method
       type: object
       properties:
         id:
@@ -2248,13 +2248,13 @@ components:
           format: int32
           nullable: true
         method:
+          minLength: 1
           type: string
           description: Request method.
-          nullable: true
         endpoint:
+          minLength: 1
           type: string
           description: API endpoint.
-          nullable: true
         api_version:
           type: integer
           description: Api version.
@@ -2470,6 +2470,8 @@ components:
           $ref: '#/components/schemas/IdFiscaleIVA'
       additionalProperties: false
     Receive:
+      required:
+        - payload
       type: object
       properties:
         id:
@@ -2513,9 +2515,9 @@ components:
           description: 'SDI format (FPA12, FPR12, FSM10, ...)'
           nullable: true
         payload:
+          minLength: 1
           type: string
           description: 'Xml payloaad. This is the actual xml content, as string. On send, it can be base64 encoded. If it''s not, it will be encoded before sending. It is guaranteed to be cyphered at rest.'
-          nullable: true
         last_update:
           type: string
           description: Last update from SDI.
@@ -2608,6 +2610,8 @@ components:
           nullable: true
       additionalProperties: false
     Send:
+      required:
+        - payload
       type: object
       properties:
         id:
@@ -2651,9 +2655,9 @@ components:
           description: 'SDI format (FPA12, FPR12, FSM10, ...)'
           nullable: true
         payload:
+          minLength: 1
           type: string
           description: 'Xml payloaad. This is the actual xml content, as string. On send, it can be base64 encoded. If it''s not, it will be encoded before sending. It is guaranteed to be cyphered at rest.'
-          nullable: true
         last_update:
           type: string
           description: Last update from SDI.
@@ -2821,6 +2825,8 @@ components:
           $ref: '#/components/schemas/SendReduced'
       additionalProperties: false
     WebHook:
+      required:
+        - url
       type: object
       properties:
         id:
@@ -2845,9 +2851,9 @@ components:
           format: int32
           nullable: true
         url:
+          minLength: 1
           type: string
           description: The url of your application's endpoint that will receive a POST request when the webhook is fired.
-          nullable: true
         enabled:
           type: boolean
           description: 'Wether the webhook is enabled. On creation, this is set to `true`.'
