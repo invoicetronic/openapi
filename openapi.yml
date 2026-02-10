@@ -5,7 +5,7 @@ info:
   termsOfService: https://invoicetronic.com/tos
   contact:
     name: Invoicetronic
-    url: https://invoicetronic.com
+    url: https://invoicetronic.com/en/contact/
     email: info@invoicetronic.com
   license:
     name: MIT
@@ -17,7 +17,7 @@ paths:
       tags:
         - company
       summary: Get a company by id
-      description: 'Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed (company details are extrapolated). **You can only receive invoices for existing companies, so ensure they exist**.'
+      description: "Retrieve a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
       parameters:
         - name: id
           in: path
@@ -39,7 +39,7 @@ paths:
       tags:
         - company
       summary: Delete a company
-      description: 'Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed (company details are extrapolated). **You can only receive invoices for existing companies, so ensure they exist**.'
+      description: "Delete a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\n**Warning:** Deleting a company will permanently remove all associated data, including sent invoices, received invoices, invoice updates from SDI, logs, and webhooks.\n\nIf the company has any linked invoices, you must explicitly confirm deletion by adding `?force=true` to the request. Without this parameter, the API will return `409 Conflict` with details about the linked data."
       parameters:
         - name: id
           in: path
@@ -48,6 +48,12 @@ paths:
           schema:
             type: integer
             format: int32
+        - name: force
+          in: query
+          description: Force delete including all related data.
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: OK
@@ -67,6 +73,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
   /company:
@@ -74,7 +86,7 @@ paths:
       tags:
         - company
       summary: List companies
-      description: 'Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed (company details are extrapolated). **You can only receive invoices for existing companies, so ensure they exist**.'
+      description: "Retrieve a paginated list of companies.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
       parameters:
         - name: page
           in: query
@@ -116,7 +128,7 @@ paths:
       tags:
         - company
       summary: Add a company
-      description: 'Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed (company details are extrapolated). **You can only receive invoices for existing companies, so ensure they exist**.'
+      description: "Add a new company.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
       requestBody:
         content:
           application/json:
@@ -146,7 +158,7 @@ paths:
       tags:
         - company
       summary: Update a company
-      description: 'Companies are the entities that send and receive invoices. As you send invoices, companies are added as needed (company details are extrapolated). **You can only receive invoices for existing companies, so ensure they exist**.'
+      description: "Update an existing company.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
       requestBody:
         content:
           application/json:
@@ -177,7 +189,7 @@ paths:
       tags:
         - log
       summary: Get an event by id
-      description: Every API operation is logged and can be retrieved here. Log records are preserved for 15 days.
+      description: "Retrieve a log event by its internal id.\n\n**Logs** record every API request. They are preserved for 15 days.\n\nYou can also view logs in the Events section of the [Dashboard](https://dashboard.invoicetronic.com)."
       parameters:
         - name: id
           in: path
@@ -200,7 +212,7 @@ paths:
       tags:
         - log
       summary: List events
-      description: Every API operation is logged and can be retrieved here. Log records are preserved for 15 days.
+      description: "Retrieve a paginated list of log events. Results can be filtered by various criteria such as endpoint, method, status code, and date ranges.\n\n**Logs** record every API request. They are preserved for 15 days.\n\nYou can also view logs in the Events section of the [Dashboard](https://dashboard.invoicetronic.com)."
       parameters:
         - name: company_id
           in: query
@@ -301,7 +313,7 @@ paths:
       tags:
         - receive
       summary: Get an incoming invoice by id
-      description: Receive invoices are the invoices that are received from other companies. They are preserved for two years in the live environment and 24 hours in the Sandbox.
+      description: "Retrieve an incoming invoice by its internal id. The `id` is unique and assigned by the system when the invoice is received. Returns invoice metadata; set `include_payload` to true to include the full invoice content. The invoice is marked as read (`is_read` = true) only when `include_payload` is true.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: id
           in: path
@@ -329,7 +341,7 @@ paths:
       tags:
         - receive
       summary: Delete an incoming invoice by id
-      description: Receive invoices are the invoices that are received from other companies. They are preserved for two years in the live environment and 24 hours in the Sandbox.
+      description: "Permanently delete a receive invoice by its internal id. This action cannot be undone.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: id
           in: path
@@ -357,6 +369,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
   /receive:
@@ -364,7 +382,7 @@ paths:
       tags:
         - receive
       summary: List incoming invoices
-      description: Receive invoices are the invoices that are received from other companies. They are preserved for two years in the live environment and 24 hours in the Sandbox.
+      description: "Retrieve a paginated list of receive invoices. Results can be filtered by various criteria such as company, date ranges, sender, and document number. Returns invoice metadata; set `include_payload` to true to include the full invoice content. Invoices are marked as read (`is_read` = true) only when `include_payload` is true.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: company_id
           in: query
@@ -484,7 +502,7 @@ paths:
       tags:
         - send
       summary: Get a invoice by id
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Retrieve a send invoice by its internal id. The `id` is unique and assigned by the system when the invoice is created. Returns invoice metadata; set `include_payload` to true to include the full invoice content.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: id
           in: path
@@ -513,7 +531,7 @@ paths:
       tags:
         - send
       summary: Get a invoice by identifier
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Retrieve a send invoice by its SDI identifier. The `identifier` is assigned by the SDI and becomes available after the invoice has been accepted. Returns invoice metadata; set `include_payload` to true to include the full invoice content.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: identifier
           in: path
@@ -546,7 +564,7 @@ paths:
       tags:
         - send
       summary: List invoices
-      description: test **markdown**.
+      description: "Retrieve a paginated list of send invoices. Results can be filtered by various criteria such as company, date ranges, and document number. Returns invoice metadata; set `include_payload` to true to include the full invoice content.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: company_id
           in: query
@@ -660,7 +678,7 @@ paths:
       tags:
         - send
       summary: Add an invoice
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Add a new invoice using a structured Send object. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com)."
       parameters:
         - name: validate
           in: query
@@ -710,7 +728,7 @@ paths:
       tags:
         - send
       summary: Add an invoice by xml
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Add a new invoice using a raw XML document in FatturaPA format. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com)."
       parameters:
         - name: validate
           in: query
@@ -760,7 +778,7 @@ paths:
       tags:
         - send
       summary: Add an invoice by file
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Add a new invoice by uploading a file. Supported formats are XML (FatturaPA) and P7M (signed). The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com)."
       parameters:
         - name: validate
           in: query
@@ -818,7 +836,7 @@ paths:
       tags:
         - send
       summary: Add an invoice by json
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Add a new invoice using a FatturaPA JSON representation. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com)."
       parameters:
         - name: validate
           in: query
@@ -868,7 +886,7 @@ paths:
       tags:
         - send
       summary: Validate an invoice
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Validate an invoice without sending it to SDI. Use this to check for errors before actual submission. Returns validation results with any errors found.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       requestBody:
         content:
           application/json:
@@ -895,7 +913,7 @@ paths:
       tags:
         - send
       summary: Validate an invoice by xml
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Validate an XML invoice document without sending it to SDI. Use this to check for errors before actual submission. Returns validation results with any errors found.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       requestBody:
         content:
           application/xml:
@@ -922,7 +940,7 @@ paths:
       tags:
         - send
       summary: Validate an invoice file
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Validate an invoice file without sending it to SDI. Supported formats are XML (FatturaPA) and P7M (signed). Use this to check for errors before actual submission. Returns validation results with any errors found.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       requestBody:
         content:
           multipart/form-data:
@@ -957,7 +975,7 @@ paths:
       tags:
         - send
       summary: Validate an invoice by json
-      description: Send invoices are the invoices that are sent to the SDI. They are preserved for two years in the live environment and 15 days in the Sandbox.
+      description: "Validate a JSON invoice without sending it to SDI. Use this to check for errors before actual submission. Returns validation results with any errors found.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       requestBody:
         content:
           application/json:
@@ -984,7 +1002,7 @@ paths:
       tags:
         - status
       summary: Account status
-      description: "This endpoint is used to know how many operations (invoices + validations) and signatures are left on your account. \n\nWhen `signature_left` is 0, you will receive a `403 Forbidden` response if you try to sign an invoice. Likewise, if `operation_left` is 0, you will receive a `403 Forbidden` response when storing or validating an invoice.\n\nYou can raise the limits by purchasing operations and/or signatures from the [Dashboard](https://dashboard.invoicetronic.com).\n\n__Please note__ that these values are not enforced if you are on the Sandbox. See the [API Keys & Sandbox](https://invoicetronic.com/apikeys/) documentation section to learn more about the Sandbox."
+      description: "Retrieve the number of operations (invoices + validations) and signatures left on your account.\n\nWhen `signature_left` is 0, you will receive a `403 Forbidden` response when trying to sign an invoice. Likewise, if `operation_left` is 0, you will receive a `403 Forbidden` response when storing or validating an invoice.\n\nYou can also check your account status from the [Dashboard](https://dashboard.invoicetronic.com), where you can purchase additional operations and/or signatures.\n\n**Please note** that these values are not enforced if you are on the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       responses:
         '200':
           description: OK
@@ -997,7 +1015,7 @@ paths:
       tags:
         - update
       summary: Get an update by id
-      description: Updates are notifications sent by the SDI about the status of invoices you sent.
+      description: "Retrieve an update by its internal id.\n\n**Updates** are status notifications from Italy's SDI (Sistema di Interscambio) about invoices you sent. Multiple updates can exist for the same send item as the invoice progresses through the SDI workflow.\n\nThe `state` field is the most important property and can have the following values:\n\n| Value | Name | Description |\n|-------|------|-------------|\n| 2 | `Inviato` | Sent to the SDI. |\n| 5 | `Consegnato` | Delivered to the recipient. |\n| 6 | `NonConsegnato` | Not delivered to the recipient. Only relevant for public administration entities. |\n| 7 | `Scartato` | Rejected by the SDI. |\n| 8 | `AccettatoDalDestinatario` | Accepted by the recipient. Only relevant for public administration entities. |\n| 9 | `RifiutatoDalDestinatario` | Rejected by the recipient. Only relevant for public administration entities. |\n| 10 | `ImpossibilitaDiRecapito` | Available on the recipient's tax drawer, but it was not possible to deliver it to the recipient's reception system. |\n| 11 | `DecorrenzaTermini` | A public administration entity has not responded for more than 15 days. The document is considered delivered. |\n| 12 | `AttestazioneTrasmissioneFattura` | A public administration entity has received the document, but has not yet processed it. |\n\n**Important:** Always monitor the state of your sent invoices. A state of `Inviato` only means the invoice has been submitted to SDI, not that it has been delivered. A state like `Scartato` indicates that the invoice was **not** successfully delivered and may require corrective action, such as fixing validation errors and resubmitting. In that case, `description` contains the reason for the rejection."
       parameters:
         - name: id
           in: path
@@ -1020,7 +1038,7 @@ paths:
       tags:
         - update
       summary: List updates
-      description: Updates are notifications sent by the SDI about the status of invoices you sent.
+      description: "Retrieve a paginated list of updates. Results can be filtered by various criteria such as company, send item, SDI state, and date ranges.\n\n**Updates** are status notifications from Italy's SDI (Sistema di Interscambio) about invoices you sent. Multiple updates can exist for the same send item as the invoice progresses through the SDI workflow.\n\nThe `state` field is the most important property and can have the following values:\n\n| Value | Name | Description |\n|-------|------|-------------|\n| 2 | `Inviato` | Sent to the SDI. |\n| 5 | `Consegnato` | Delivered to the recipient. |\n| 6 | `NonConsegnato` | Not delivered to the recipient. Only relevant for public administration entities. |\n| 7 | `Scartato` | Rejected by the SDI. |\n| 8 | `AccettatoDalDestinatario` | Accepted by the recipient. Only relevant for public administration entities. |\n| 9 | `RifiutatoDalDestinatario` | Rejected by the recipient. Only relevant for public administration entities. |\n| 10 | `ImpossibilitaDiRecapito` | Available on the recipient's tax drawer, but it was not possible to deliver it to the recipient's reception system. |\n| 11 | `DecorrenzaTermini` | A public administration entity has not responded for more than 15 days. The document is considered delivered. |\n| 12 | `AttestazioneTrasmissioneFattura` | A public administration entity has received the document, but has not yet processed it. |\n\n**Important:** Always monitor the state of your sent invoices. A state of `Inviato` only means the invoice has been submitted to SDI, not that it has been delivered. A state like `Scartato` indicates that the invoice was **not** successfully delivered and may require corrective action, such as fixing validation errors and resubmitting. In that case, `description` contains the reason for the rejection."
       parameters:
         - name: company_id
           in: query
@@ -1130,7 +1148,7 @@ paths:
       tags:
         - webhook
       summary: Get a webhook by id
-      description: Webhooks are used to notify external services about write events that occur in the API. You can subscribe to specific events and receive a notification when they occur.
+      description: "Retrieve a webhook by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: id
           in: path
@@ -1152,7 +1170,7 @@ paths:
       tags:
         - webhook
       summary: Delete a webhook by id
-      description: Webhooks are used to notify external services about write events that occur in the API. You can subscribe to specific events and receive a notification when they occur.
+      description: "Delete a webhook subscription by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: id
           in: path
@@ -1180,6 +1198,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
   /webhook:
@@ -1187,7 +1211,7 @@ paths:
       tags:
         - webhook
       summary: List webhooks
-      description: Webhooks are used to notify external services about write events that occur in the API. You can subscribe to specific events and receive a notification when they occur.
+      description: "Retrieve a paginated list of webhooks. Results can be filtered by company, description, enabled status, events, and URL.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: company_id
           in: query
@@ -1251,7 +1275,7 @@ paths:
       tags:
         - webhook
       summary: Add a webhook
-      description: Webhooks are used to notify external services about write events that occur in the API. You can subscribe to specific events and receive a notification when they occur.
+      description: "Create a new webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       requestBody:
         content:
           application/json:
@@ -1281,7 +1305,7 @@ paths:
       tags:
         - webhook
       summary: Update a webhook
-      description: Webhooks are used to notify external services about write events that occur in the API. You can subscribe to specific events and receive a notification when they occur.
+      description: "Update an existing webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       requestBody:
         content:
           application/json:
@@ -2278,7 +2302,7 @@ components:
           nullable: true
         success:
           type: boolean
-          description: Wether the request was successful.
+          description: Whether the request was successful.
           readOnly: true
         query:
           type: string
@@ -2286,7 +2310,7 @@ components:
           nullable: true
         response_body:
           type: string
-          description: Response payload. It is guaranteed to be cyphered at rest.
+          description: Response payload. It is guaranteed to be encrypted at rest.
           nullable: true
       additionalProperties: false
     FatturaElettronicaBody:
@@ -2504,7 +2528,7 @@ components:
           nullable: true
         identifier:
           type: string
-          description: SDI identifier. This is set by the SDI and is guaranted to be unique within the SDI system.
+          description: SDI identifier. This is set by the SDI and is guaranteed to be unique within the SDI system.
           nullable: true
         file_name:
           type: string
@@ -2517,7 +2541,7 @@ components:
         payload:
           minLength: 1
           type: string
-          description: 'Xml payloaad. This is the actual xml content, as string. On send, it can be base64 encoded. If it''s not, it will be encoded before sending. It is guaranteed to be cyphered at rest.'
+          description: 'Xml payload. This is the actual xml content, as string. On send, it can be base64 encoded. If it''s not, it will be encoded before sending. It is guaranteed to be encrypted at rest.'
         last_update:
           type: string
           description: Last update from SDI.
@@ -2542,7 +2566,7 @@ components:
           description: Whether the payload is Base64 encoded or a plain XML (text).
         is_read:
           type: boolean
-          description: Wether the invoice has been read at least once.
+          description: Whether the invoice has been read at least once. Set to true only when the invoice is requested with include_payload=true.
         message_id:
           type: string
           description: SDI message id.
@@ -2644,7 +2668,7 @@ components:
           nullable: true
         identifier:
           type: string
-          description: SDI identifier. This is set by the SDI and is guaranted to be unique within the SDI system.
+          description: SDI identifier. This is set by the SDI and is guaranteed to be unique within the SDI system.
           nullable: true
         file_name:
           type: string
@@ -2657,7 +2681,7 @@ components:
         payload:
           minLength: 1
           type: string
-          description: 'Xml payloaad. This is the actual xml content, as string. On send, it can be base64 encoded. If it''s not, it will be encoded before sending. It is guaranteed to be cyphered at rest.'
+          description: 'Xml payload. This is the actual xml content, as string. On send, it can be base64 encoded. If it''s not, it will be encoded before sending. It is guaranteed to be encrypted at rest.'
         last_update:
           type: string
           description: Last update from SDI.
@@ -2803,7 +2827,7 @@ components:
             - DecorrenzaTermini
             - AttestazioneTrasmissioneFattura
           type: string
-          description: 'State of the document. Theses are the possible values, as per the SDI documentation:'
+          description: 'State of the document. These are the possible values, as per the SDI documentation:'
         description:
           type: string
           description: Description for the state.
@@ -2820,7 +2844,7 @@ components:
           nullable: true
         is_read:
           type: boolean
-          description: Wether the item has been read at least once.
+          description: Whether the item has been read at least once.
         send:
           $ref: '#/components/schemas/SendReduced'
       additionalProperties: false
@@ -2856,7 +2880,7 @@ components:
           description: The url of your application's endpoint that will receive a POST request when the webhook is fired.
         enabled:
           type: boolean
-          description: 'Wether the webhook is enabled. On creation, this is set to `true`.'
+          description: 'Whether the webhook is enabled. On creation, this is set to `true`.'
         secret:
           type: string
           description: 'The secret used to generate webhook signatures, only returned on creation. You should store this value securely and validate it on every call, to ensure that the caller is InvoicetronicApi.'
@@ -2869,7 +2893,7 @@ components:
           type: array
           items:
             type: string
-          description: "List of events to that trigger the webhook.\r\nSee Invoicetronic.SupportedEvents.Available for a list of valid event names."
+          description: "List of events that trigger the webhook.\r\nSee Invoicetronic.SupportedEvents.Available for a list of valid event names."
           nullable: true
       additionalProperties: false
     WebHookHistory:
@@ -2909,7 +2933,7 @@ components:
           format: date-time
         success:
           type: boolean
-          description: Wether the request was successful.
+          description: Whether the request was successful.
           readOnly: true
       additionalProperties: false
       description: Webhook history.
