@@ -184,6 +184,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
+  /export:
+    get:
+      tags:
+        - export
+      summary: Export invoices as a ZIP archive
+      description: "Export invoices as a ZIP archive of FatturaPA XML files, suitable for import into accounting software (TeamSystem, Zucchetti, etc.).\n\n**Sent invoices** are only included when they have reached a definitive state (e.g., `Consegnato` for private recipients, `AccettatoDalDestinatario`, `DecorrenzaTermini`, etc.). Invoices still being processed by SDI are excluded.\n\n**Received invoices** are always included. Unread invoices are automatically marked as read and counted as operations.\n\n### Period filters\n\nYou can filter by period using either:\n- `year` + `month` (e.g., `year=2026&month=3` for March 2026)\n- `year` + `quarter` (e.g., `year=2026&quarter=1` for Q1 Jan-Mar)\n- `document_date_from` / `document_date_to` for a custom date range\n\nThese options are mutually exclusive. The `year` parameter alone is not valid and requires either `month` or `quarter`.\n\n### Response\n\nReturns `200` with a ZIP archive, or `204 No Content` if no invoices match the given filters. Files in the archive are organized by company VAT number (`{vat}/send/`, `{vat}/receive/`).\n\n### Rate limiting\n\nThis endpoint has a dedicated rate limit: only one export request per user can be processed at a time. Concurrent requests will receive a `429 Too Many Requests` response."
+      parameters:
+        - name: type
+          in: query
+          schema:
+            enum:
+              - Send
+              - Receive
+              - Both
+            type: string
+            default: Both
+        - name: company_id
+          in: query
+          description: Company id
+          schema:
+            type: integer
+            format: int32
+        - name: year
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: month
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: quarter
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: document_date_from
+          in: query
+          description: UTC ISO 8601 (2024-11-29T12:34:56Z)
+          schema:
+            type: string
+            format: date-time
+        - name: document_date_to
+          in: query
+          description: UTC ISO 8601 (2024-11-29T12:34:56Z)
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: OK
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/log/{id}':
     get:
       tags:
