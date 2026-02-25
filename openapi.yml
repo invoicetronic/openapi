@@ -1538,6 +1538,108 @@ paths:
                 $ref: '#/components/schemas/ProblemHttpResult'
 components:
   schemas:
+    Allegati:
+      type: object
+      properties:
+        nome_attachment:
+          type: string
+          nullable: true
+        algoritmo_compressione:
+          type: string
+          nullable: true
+        formato_attachment:
+          type: string
+          nullable: true
+        descrizione_attachment:
+          type: string
+          nullable: true
+        attachment:
+          type: string
+          format: byte
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    AltriDatiGestionali:
+      type: object
+      properties:
+        tipo_dato:
+          type: string
+          nullable: true
+        riferimento_testo:
+          type: string
+          nullable: true
+        riferimento_numero:
+          type: number
+          format: double
+          nullable: true
+        riferimento_data:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    Anagrafica:
+      type: object
+      properties:
+        denominazione:
+          type: string
+          nullable: true
+        nome:
+          type: string
+          nullable: true
+        cognome:
+          type: string
+          nullable: true
+        titolo:
+          type: string
+          nullable: true
+        cod_eori:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    CedentePrestatore:
+      type: object
+      properties:
+        dati_anagrafici:
+          $ref: '#/components/schemas/DatiAnagraficiCedentePrestatore'
+        sede:
+          $ref: '#/components/schemas/SedeCedentePrestatore'
+        stabile_organizzazione:
+          $ref: '#/components/schemas/StabileOrganizzazione'
+        iscrizione_rea:
+          $ref: '#/components/schemas/IscrizioneREA'
+        contatti:
+          $ref: '#/components/schemas/Contatti'
+        riferimento_amministrazione:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    CessionarioCommittente:
+      type: object
+      properties:
+        dati_anagrafici:
+          $ref: '#/components/schemas/DatiAnagraficiCessionarioCommittente'
+        sede:
+          $ref: '#/components/schemas/SedeCessionarioCommittente'
+        stabile_organizzazione:
+          $ref: '#/components/schemas/StabileOrganizzazione'
+        rappresentante_fiscale:
+          $ref: '#/components/schemas/RappresentanteFiscaleCessionarioCommittente'
+      additionalProperties: false
+      x-internal: true
+    CodiceArticolo:
+      type: object
+      properties:
+        codice_tipo:
+          type: string
+          nullable: true
+        codice_valore:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
     Company:
       required:
         - fiscal_code
@@ -1578,6 +1680,733 @@ components:
           example: Mario Rossi Srl
       additionalProperties: false
       description: A company model.
+    Contatti:
+      type: object
+      properties:
+        telefono:
+          type: string
+          nullable: true
+        fax:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    ContattiTrasmittente:
+      type: object
+      properties:
+        telefono:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiAnagrafici:
+      type: object
+      properties:
+        id_fiscale_iva:
+          $ref: '#/components/schemas/IdFiscaleIVA'
+        codice_fiscale:
+          type: string
+          nullable: true
+        anagrafica:
+          $ref: '#/components/schemas/Anagrafica'
+      additionalProperties: false
+      x-internal: true
+    DatiAnagraficiCedentePrestatore:
+      type: object
+      properties:
+        id_fiscale_iva:
+          $ref: '#/components/schemas/IdFiscaleIVA'
+        codice_fiscale:
+          type: string
+          nullable: true
+        anagrafica:
+          $ref: '#/components/schemas/Anagrafica'
+        albo_professionale:
+          type: string
+          nullable: true
+        provincia_albo:
+          type: string
+          nullable: true
+        numero_iscrizione_albo:
+          type: string
+          nullable: true
+        data_iscrizione_albo:
+          type: string
+          format: date-time
+          nullable: true
+        regime_fiscale:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiAnagraficiCessionarioCommittente:
+      type: object
+      properties:
+        id_fiscale_iva:
+          $ref: '#/components/schemas/IdFiscaleIVA'
+        codice_fiscale:
+          type: string
+          nullable: true
+        anagrafica:
+          $ref: '#/components/schemas/Anagrafica'
+      additionalProperties: false
+      x-internal: true
+    DatiAnagraficiVettore:
+      type: object
+      properties:
+        id_fiscale_iva:
+          $ref: '#/components/schemas/IdFiscaleIVA'
+        codice_fiscale:
+          type: string
+          nullable: true
+        anagrafica:
+          $ref: '#/components/schemas/Anagrafica'
+        numero_licenza_guida:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiBeniServizi:
+      type: object
+      properties:
+        dettaglio_linee:
+          type: array
+          items:
+            $ref: '#/components/schemas/DettaglioLinee'
+          nullable: true
+        dati_riepilogo:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiRiepilogo'
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiBollo:
+      type: object
+      properties:
+        bollo_virtuale:
+          type: string
+          nullable: true
+        importo_bollo:
+          type: number
+          format: double
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiCassaPrevidenziale:
+      type: object
+      properties:
+        tipo_cassa:
+          type: string
+          nullable: true
+        al_cassa:
+          type: number
+          format: double
+        importo_contributo_cassa:
+          type: number
+          format: double
+        imponibile_cassa:
+          type: number
+          format: double
+        aliquota_iva:
+          type: number
+          format: double
+        ritenuta:
+          type: string
+          nullable: true
+        natura:
+          type: string
+          nullable: true
+        riferimento_amministrazione:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiContratto:
+      type: object
+      properties:
+        riferimento_numero_linea:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        id_documento:
+          type: string
+          nullable: true
+        data:
+          type: string
+          format: date-time
+          nullable: true
+        num_item:
+          type: string
+          nullable: true
+        codice_commessa_convenzione:
+          type: string
+          nullable: true
+        codice_cup:
+          type: string
+          nullable: true
+        codice_cig:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiConvenzione:
+      type: object
+      properties:
+        riferimento_numero_linea:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        id_documento:
+          type: string
+          nullable: true
+        data:
+          type: string
+          format: date-time
+          nullable: true
+        num_item:
+          type: string
+          nullable: true
+        codice_commessa_convenzione:
+          type: string
+          nullable: true
+        codice_cup:
+          type: string
+          nullable: true
+        codice_cig:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiDDT:
+      type: object
+      properties:
+        numero_ddt:
+          type: string
+          nullable: true
+        data_ddt:
+          type: string
+          format: date-time
+        riferimento_numero_linea:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiFattureCollegate:
+      type: object
+      properties:
+        riferimento_numero_linea:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        id_documento:
+          type: string
+          nullable: true
+        data:
+          type: string
+          format: date-time
+          nullable: true
+        num_item:
+          type: string
+          nullable: true
+        codice_commessa_convenzione:
+          type: string
+          nullable: true
+        codice_cup:
+          type: string
+          nullable: true
+        codice_cig:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiGenerali:
+      type: object
+      properties:
+        dati_generali_documento:
+          $ref: '#/components/schemas/DatiGeneraliDocumento'
+        dati_ordine_acquisto:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiOrdineAcquisto'
+          nullable: true
+        dati_contratto:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiContratto'
+          nullable: true
+        dati_convenzione:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiConvenzione'
+          nullable: true
+        dati_ricezione:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiRicezione'
+          nullable: true
+        dati_fatture_collegate:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiFattureCollegate'
+          nullable: true
+        dati_sal:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiSAL'
+          nullable: true
+        dati_ddt:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiDDT'
+          nullable: true
+        dati_trasporto:
+          $ref: '#/components/schemas/DatiTrasporto'
+        fattura_principale:
+          $ref: '#/components/schemas/FatturaPrincipale'
+      additionalProperties: false
+      x-internal: true
+    DatiGeneraliDocumento:
+      type: object
+      properties:
+        tipo_documento:
+          type: string
+          nullable: true
+        divisa:
+          type: string
+          nullable: true
+        data:
+          type: string
+          format: date-time
+        numero:
+          type: string
+          nullable: true
+        dati_ritenuta:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiRitenuta'
+          nullable: true
+        dati_bollo:
+          $ref: '#/components/schemas/DatiBollo'
+        dati_cassa_previdenziale:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiCassaPrevidenziale'
+          nullable: true
+        sconto_maggiorazione:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScontoMaggiorazione'
+          nullable: true
+        importo_totale_documento:
+          type: number
+          format: double
+          nullable: true
+        arrotondamento:
+          type: number
+          format: double
+          nullable: true
+        causale:
+          type: array
+          items:
+            type: string
+          nullable: true
+        art73:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiOrdineAcquisto:
+      type: object
+      properties:
+        riferimento_numero_linea:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        id_documento:
+          type: string
+          nullable: true
+        data:
+          type: string
+          format: date-time
+          nullable: true
+        num_item:
+          type: string
+          nullable: true
+        codice_commessa_convenzione:
+          type: string
+          nullable: true
+        codice_cup:
+          type: string
+          nullable: true
+        codice_cig:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiPagamento:
+      type: object
+      properties:
+        condizioni_pagamento:
+          type: string
+          nullable: true
+        dettaglio_pagamento:
+          type: array
+          items:
+            $ref: '#/components/schemas/DettaglioPagamento'
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiRicezione:
+      type: object
+      properties:
+        riferimento_numero_linea:
+          type: array
+          items:
+            type: integer
+            format: int32
+          nullable: true
+        id_documento:
+          type: string
+          nullable: true
+        data:
+          type: string
+          format: date-time
+          nullable: true
+        num_item:
+          type: string
+          nullable: true
+        codice_commessa_convenzione:
+          type: string
+          nullable: true
+        codice_cup:
+          type: string
+          nullable: true
+        codice_cig:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiRiepilogo:
+      type: object
+      properties:
+        aliquota_iva:
+          type: number
+          format: double
+        natura:
+          type: string
+          nullable: true
+        spese_accessorie:
+          type: number
+          format: double
+          nullable: true
+        arrotondamento:
+          type: number
+          format: double
+          nullable: true
+        imponibile_importo:
+          type: number
+          format: double
+        imposta:
+          type: number
+          format: double
+        esigibilita_iva:
+          type: string
+          nullable: true
+        riferimento_normativo:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiRitenuta:
+      type: object
+      properties:
+        tipo_ritenuta:
+          type: string
+          nullable: true
+        importo_ritenuta:
+          type: number
+          format: double
+        aliquota_ritenuta:
+          type: number
+          format: double
+        causale_pagamento:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiSAL:
+      type: object
+      properties:
+        riferimento_fase:
+          type: integer
+          format: int32
+      additionalProperties: false
+      x-internal: true
+    DatiTrasmissione:
+      type: object
+      properties:
+        id_trasmittente:
+          $ref: '#/components/schemas/IdTrasmittente'
+        progressivo_invio:
+          type: string
+          nullable: true
+        formato_trasmissione:
+          type: string
+          nullable: true
+        codice_destinatario:
+          type: string
+          nullable: true
+        contatti_trasmittente:
+          $ref: '#/components/schemas/ContattiTrasmittente'
+        pec_destinatario:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiTrasporto:
+      type: object
+      properties:
+        dati_anagrafici_vettore:
+          $ref: '#/components/schemas/DatiAnagraficiVettore'
+        mezzo_trasporto:
+          type: string
+          nullable: true
+        causale_trasporto:
+          type: string
+          nullable: true
+        numero_colli:
+          type: integer
+          format: int32
+          nullable: true
+        descrizione:
+          type: string
+          nullable: true
+        unita_misura_peso:
+          type: string
+          nullable: true
+        peso_lordo:
+          type: number
+          format: double
+          nullable: true
+        peso_netto:
+          type: number
+          format: double
+          nullable: true
+        data_ora_ritiro:
+          type: string
+          format: date-time
+          nullable: true
+        data_inizio_trasporto:
+          type: string
+          format: date-time
+          nullable: true
+        tipo_resa:
+          type: string
+          nullable: true
+        indirizzo_resa:
+          $ref: '#/components/schemas/IndirizzoResa'
+        data_ora_consegna:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DatiVeicoli:
+      type: object
+      properties:
+        data:
+          type: string
+          format: date-time
+          nullable: true
+        totale_percorso:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DettaglioLinee:
+      type: object
+      properties:
+        numero_linea:
+          type: integer
+          format: int32
+        tipo_cessione_prestazione:
+          type: string
+          nullable: true
+        codice_articolo:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodiceArticolo'
+          nullable: true
+        descrizione:
+          type: string
+          nullable: true
+        quantita:
+          type: number
+          format: double
+          nullable: true
+        unita_misura:
+          type: string
+          nullable: true
+        data_inizio_periodo:
+          type: string
+          format: date-time
+          nullable: true
+        data_fine_periodo:
+          type: string
+          format: date-time
+          nullable: true
+        prezzo_unitario:
+          type: number
+          format: double
+        sconto_maggiorazione:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScontoMaggiorazione'
+          nullable: true
+        prezzo_totale:
+          type: number
+          format: double
+        aliquota_iva:
+          type: number
+          format: double
+        ritenuta:
+          type: string
+          nullable: true
+        natura:
+          type: string
+          nullable: true
+        riferimento_amministrazione:
+          type: string
+          nullable: true
+        altri_dati_gestionali:
+          type: array
+          items:
+            $ref: '#/components/schemas/AltriDatiGestionali'
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DettaglioPagamento:
+      type: object
+      properties:
+        beneficiario:
+          type: string
+          nullable: true
+        modalita_pagamento:
+          type: string
+          nullable: true
+        data_riferimento_termini_pagamento:
+          type: string
+          format: date-time
+          nullable: true
+        giorni_termini_pagamento:
+          type: integer
+          format: int32
+          nullable: true
+        data_scadenza_pagamento:
+          type: string
+          format: date-time
+          nullable: true
+        importo_pagamento:
+          type: number
+          format: double
+        cod_ufficio_postale:
+          type: string
+          nullable: true
+        cognome_quietanzante:
+          type: string
+          nullable: true
+        nome_quietanzante:
+          type: string
+          nullable: true
+        cf_quietanzante:
+          type: string
+          nullable: true
+        titolo_quietanzante:
+          type: string
+          nullable: true
+        istituto_finanziario:
+          type: string
+          nullable: true
+        iban:
+          type: string
+          nullable: true
+        abi:
+          type: string
+          nullable: true
+        cab:
+          type: string
+          nullable: true
+        bic:
+          type: string
+          nullable: true
+        sconto_pagamento_anticipato:
+          type: number
+          format: double
+          nullable: true
+        data_limite_pagamento_anticipato:
+          type: string
+          format: date-time
+          nullable: true
+        penalita_pagamenti_ritardati:
+          type: number
+          format: double
+          nullable: true
+        data_decorrenza_penale:
+          type: string
+          format: date-time
+          nullable: true
+        codice_pagamento:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    DocumentData:
+      type: object
+      properties:
+        number:
+          type: string
+          nullable: true
+        date:
+          type: string
+          format: date-time
+      additionalProperties: false
+      x-internal: true
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code.
+          nullable: true
+        description:
+          type: string
+          description: Error description.
+          nullable: true
+        hint:
+          type: string
+          description: Hint on how to solve the issue.
+          nullable: true
+      additionalProperties: false
+      description: Validation error from the SDI.
+      x-internal: true
     Event:
       required:
         - endpoint
@@ -1652,6 +2481,198 @@ components:
           nullable: true
       additionalProperties: false
       description: An API request log entry.
+    FatturaElettronicaBody:
+      type: object
+      properties:
+        dati_generali:
+          $ref: '#/components/schemas/DatiGenerali'
+        dati_beni_servizi:
+          $ref: '#/components/schemas/DatiBeniServizi'
+        dati_veicoli:
+          $ref: '#/components/schemas/DatiVeicoli'
+        dati_pagamento:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatiPagamento'
+          nullable: true
+        allegati:
+          type: array
+          items:
+            $ref: '#/components/schemas/Allegati'
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    FatturaElettronicaHeader:
+      type: object
+      properties:
+        dati_trasmissione:
+          $ref: '#/components/schemas/DatiTrasmissione'
+        cedente_prestatore:
+          $ref: '#/components/schemas/CedentePrestatore'
+        RappresentanteFiscale:
+          $ref: '#/components/schemas/RappresentanteFiscale'
+        cessionario_committente:
+          $ref: '#/components/schemas/CessionarioCommittente'
+        terzo_intermediario_o_soggetto_emittente:
+          $ref: '#/components/schemas/TerzoIntermediarioOSoggettoEmittente'
+        soggetto_emittente:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    FatturaOrdinaria:
+      type: object
+      properties:
+        sistema_emittente:
+          type: string
+          nullable: true
+        fattura_elettronica_header:
+          $ref: '#/components/schemas/FatturaElettronicaHeader'
+        fattura_elettronica_body:
+          type: array
+          items:
+            $ref: '#/components/schemas/FatturaElettronicaBody'
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    FatturaPrincipale:
+      type: object
+      properties:
+        numero_fattura_principale:
+          type: string
+          nullable: true
+        data_fattura_principale:
+          type: string
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    IdFiscaleIVA:
+      type: object
+      properties:
+        id_paese:
+          type: string
+          nullable: true
+        id_codice:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    IdTrasmittente:
+      type: object
+      properties:
+        id_paese:
+          type: string
+          nullable: true
+        id_codice:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    IndirizzoResa:
+      type: object
+      properties:
+        indirizzo:
+          type: string
+          nullable: true
+        numero_civico:
+          type: string
+          nullable: true
+        cap:
+          type: string
+          nullable: true
+        comune:
+          type: string
+          nullable: true
+        provincia:
+          type: string
+          nullable: true
+        nazione:
+          type: string
+          default: IT
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    IscrizioneREA:
+      type: object
+      properties:
+        ufficio:
+          type: string
+          nullable: true
+        numero_rea:
+          type: string
+          nullable: true
+        capitale_sociale:
+          type: number
+          format: double
+          nullable: true
+        socio_unico:
+          type: string
+          nullable: true
+        stato_liquidazione:
+          type: string
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: { }
+      x-internal: true
+    ProblemHttpResult:
+      type: object
+      properties:
+        problem_details:
+          $ref: '#/components/schemas/ProblemDetails'
+        content_type:
+          type: string
+          nullable: true
+          readOnly: true
+        status_code:
+          type: integer
+          format: int32
+          readOnly: true
+      additionalProperties: false
+      x-internal: true
+    RappresentanteFiscale:
+      type: object
+      properties:
+        dati_anagrafici:
+          $ref: '#/components/schemas/DatiAnagrafici'
+      additionalProperties: false
+      x-internal: true
+    RappresentanteFiscaleCessionarioCommittente:
+      type: object
+      properties:
+        denominazione:
+          type: string
+          nullable: true
+        nome:
+          type: string
+          nullable: true
+        cognome:
+          type: string
+          nullable: true
+        id_fiscale_iva:
+          $ref: '#/components/schemas/IdFiscaleIVA'
+      additionalProperties: false
+      x-internal: true
     Receive:
       required:
         - payload
@@ -1732,6 +2753,70 @@ components:
           nullable: true
       additionalProperties: false
       description: A received invoice.
+    ScontoMaggiorazione:
+      type: object
+      properties:
+        tipo:
+          type: string
+          nullable: true
+        percentuale:
+          type: number
+          format: double
+          nullable: true
+        importo:
+          type: number
+          format: double
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    SedeCedentePrestatore:
+      type: object
+      properties:
+        indirizzo:
+          type: string
+          nullable: true
+        numero_civico:
+          type: string
+          nullable: true
+        cap:
+          type: string
+          nullable: true
+        comune:
+          type: string
+          nullable: true
+        provincia:
+          type: string
+          nullable: true
+        nazione:
+          type: string
+          default: IT
+          nullable: true
+      additionalProperties: false
+      x-internal: true
+    SedeCessionarioCommittente:
+      type: object
+      properties:
+        indirizzo:
+          type: string
+          nullable: true
+        numero_civico:
+          type: string
+          nullable: true
+        cap:
+          type: string
+          nullable: true
+        comune:
+          type: string
+          nullable: true
+        provincia:
+          type: string
+          nullable: true
+        nazione:
+          type: string
+          default: IT
+          nullable: true
+      additionalProperties: false
+      x-internal: true
     Send:
       required:
         - payload
@@ -1813,6 +2898,61 @@ components:
           $ref: '#/components/schemas/Company'
       additionalProperties: false
       description: A sent invoice.
+    SendReduced:
+      type: object
+      properties:
+        identifier:
+          type: string
+          description: SDI identifier.
+          nullable: true
+        prestatore:
+          type: string
+          description: VAT number of the Cedente/Prestatore (vendor).
+          nullable: true
+        meta_data:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Optional metadata, as json.'
+          nullable: true
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentData'
+          description: The invoices included in the payload.
+          nullable: true
+        date_sent:
+          type: string
+          description: When the invoice was sent to SDI.
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      description: 'Reduced Send data for Update responses, containing only the essential fields.'
+      x-internal: true
+    StabileOrganizzazione:
+      type: object
+      properties:
+        indirizzo:
+          type: string
+          nullable: true
+        numero_civico:
+          type: string
+          nullable: true
+        cap:
+          type: string
+          nullable: true
+        comune:
+          type: string
+          nullable: true
+        provincia:
+          type: string
+          nullable: true
+        nazione:
+          type: string
+          default: IT
+          nullable: true
+      additionalProperties: false
+      x-internal: true
     Status:
       type: object
       properties:
@@ -1826,6 +2966,13 @@ components:
           format: int32
       additionalProperties: false
       description: Account status with remaining operations and signatures.
+    TerzoIntermediarioOSoggettoEmittente:
+      type: object
+      properties:
+        dati_anagrafici:
+          $ref: '#/components/schemas/DatiAnagrafici'
+      additionalProperties: false
+      x-internal: true
     Update:
       type: object
       properties:
