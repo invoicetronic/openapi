@@ -81,6 +81,33 @@ paths:
                 $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
+  '/company/{vat}':
+    get:
+      tags:
+        - company
+      summary: Get a company by vat number
+      description: "Retrieve a company by its VAT number.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
+      parameters:
+        - name: vat
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '404':
+          description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemHttpResult'
   /company:
     get:
       tags:
@@ -437,6 +464,29 @@ paths:
                 $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
+  '/receive/{id}/payload':
+    get:
+      tags:
+        - receive
+      summary: Get a receive invoice payload by id
+      description: "Retrieve only the payload of a receive invoice, without the full invoice metadata.\nThis is useful when you already have the invoice metadata and only need the XML content.\n\nThe response is a `text/plain` string, identical to the `payload` field returned\nby the standard GET endpoint with `include_payload=true`.\n\nThe invoice is marked as read (`is_read` = true) and counted as an operation, same as when\nretrieving the full invoice with `include_payload=true`.\n"
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /receive:
     get:
       tags:
@@ -619,6 +669,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemHttpResult'
+  '/send/{id}/payload':
+    get:
+      tags:
+        - send
+      summary: Get a send invoice payload by id
+      description: "Retrieve only the payload of a send invoice, without the full invoice metadata.\nThis is useful when you already have the invoice metadata and only need the XML content.\n\nThe response is a `text/plain` string, identical to the `payload` field returned\nby the standard GET endpoint with `include_payload=true`. Depending on how the invoice\nwas originally submitted, the payload may be Base64-encoded or plain XML.\n"
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /send:
     get:
       tags:
@@ -1485,6 +1558,7 @@ components:
           format: byte
           nullable: true
       additionalProperties: false
+      x-internal: true
     AltriDatiGestionali:
       type: object
       properties:
@@ -1503,6 +1577,7 @@ components:
           format: date-time
           nullable: true
       additionalProperties: false
+      x-internal: true
     Anagrafica:
       type: object
       properties:
@@ -1522,6 +1597,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     CedentePrestatore:
       type: object
       properties:
@@ -1539,6 +1615,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     CessionarioCommittente:
       type: object
       properties:
@@ -1551,6 +1628,7 @@ components:
         rappresentante_fiscale:
           $ref: '#/components/schemas/RappresentanteFiscaleCessionarioCommittente'
       additionalProperties: false
+      x-internal: true
     CodiceArticolo:
       type: object
       properties:
@@ -1561,6 +1639,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     Company:
       required:
         - fiscal_code
@@ -1614,6 +1693,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     ContattiTrasmittente:
       type: object
       properties:
@@ -1624,6 +1704,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiAnagrafici:
       type: object
       properties:
@@ -1635,6 +1716,7 @@ components:
         anagrafica:
           $ref: '#/components/schemas/Anagrafica'
       additionalProperties: false
+      x-internal: true
     DatiAnagraficiCedentePrestatore:
       type: object
       properties:
@@ -1662,6 +1744,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiAnagraficiCessionarioCommittente:
       type: object
       properties:
@@ -1673,6 +1756,7 @@ components:
         anagrafica:
           $ref: '#/components/schemas/Anagrafica'
       additionalProperties: false
+      x-internal: true
     DatiAnagraficiVettore:
       type: object
       properties:
@@ -1687,6 +1771,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiBeniServizi:
       type: object
       properties:
@@ -1701,6 +1786,7 @@ components:
             $ref: '#/components/schemas/DatiRiepilogo'
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiBollo:
       type: object
       properties:
@@ -1712,6 +1798,7 @@ components:
           format: double
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiCassaPrevidenziale:
       type: object
       properties:
@@ -1740,6 +1827,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiContratto:
       type: object
       properties:
@@ -1769,6 +1857,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiConvenzione:
       type: object
       properties:
@@ -1798,6 +1887,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiDDT:
       type: object
       properties:
@@ -1814,6 +1904,7 @@ components:
             format: int32
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiFattureCollegate:
       type: object
       properties:
@@ -1843,6 +1934,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiGenerali:
       type: object
       properties:
@@ -1888,6 +1980,7 @@ components:
         fattura_principale:
           $ref: '#/components/schemas/FatturaPrincipale'
       additionalProperties: false
+      x-internal: true
     DatiGeneraliDocumento:
       type: object
       properties:
@@ -1937,6 +2030,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiOrdineAcquisto:
       type: object
       properties:
@@ -1966,6 +2060,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiPagamento:
       type: object
       properties:
@@ -1978,6 +2073,7 @@ components:
             $ref: '#/components/schemas/DettaglioPagamento'
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiRicezione:
       type: object
       properties:
@@ -2007,6 +2103,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiRiepilogo:
       type: object
       properties:
@@ -2037,6 +2134,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiRitenuta:
       type: object
       properties:
@@ -2053,6 +2151,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiSAL:
       type: object
       properties:
@@ -2060,6 +2159,7 @@ components:
           type: integer
           format: int32
       additionalProperties: false
+      x-internal: true
     DatiTrasmissione:
       type: object
       properties:
@@ -2080,6 +2180,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiTrasporto:
       type: object
       properties:
@@ -2127,6 +2228,7 @@ components:
           format: date-time
           nullable: true
       additionalProperties: false
+      x-internal: true
     DatiVeicoli:
       type: object
       properties:
@@ -2138,6 +2240,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DettaglioLinee:
       type: object
       properties:
@@ -2199,6 +2302,7 @@ components:
             $ref: '#/components/schemas/AltriDatiGestionali'
           nullable: true
       additionalProperties: false
+      x-internal: true
     DettaglioPagamento:
       type: object
       properties:
@@ -2273,6 +2377,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     DocumentData:
       type: object
       properties:
@@ -2283,6 +2388,7 @@ components:
           type: string
           format: date-time
       additionalProperties: false
+      x-internal: true
     Error:
       type: object
       properties:
@@ -2300,6 +2406,7 @@ components:
           nullable: true
       additionalProperties: false
       description: Validation error from the SDI.
+      x-internal: true
     Event:
       required:
         - endpoint
@@ -2373,6 +2480,7 @@ components:
           description: Response payload. It is guaranteed to be encrypted at rest.
           nullable: true
       additionalProperties: false
+      description: An API request log entry.
     FatturaElettronicaBody:
       type: object
       properties:
@@ -2393,6 +2501,7 @@ components:
             $ref: '#/components/schemas/Allegati'
           nullable: true
       additionalProperties: false
+      x-internal: true
     FatturaElettronicaHeader:
       type: object
       properties:
@@ -2410,6 +2519,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     FatturaOrdinaria:
       type: object
       properties:
@@ -2424,6 +2534,7 @@ components:
             $ref: '#/components/schemas/FatturaElettronicaBody'
           nullable: true
       additionalProperties: false
+      x-internal: true
     FatturaPrincipale:
       type: object
       properties:
@@ -2435,6 +2546,7 @@ components:
           format: date-time
           nullable: true
       additionalProperties: false
+      x-internal: true
     IdFiscaleIVA:
       type: object
       properties:
@@ -2445,6 +2557,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     IdTrasmittente:
       type: object
       properties:
@@ -2455,6 +2568,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     IndirizzoResa:
       type: object
       properties:
@@ -2478,6 +2592,7 @@ components:
           default: IT
           nullable: true
       additionalProperties: false
+      x-internal: true
     IscrizioneREA:
       type: object
       properties:
@@ -2498,6 +2613,7 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+      x-internal: true
     ProblemDetails:
       type: object
       properties:
@@ -2518,6 +2634,7 @@ components:
           type: string
           nullable: true
       additionalProperties: { }
+      x-internal: true
     ProblemHttpResult:
       type: object
       properties:
@@ -2532,12 +2649,14 @@ components:
           format: int32
           readOnly: true
       additionalProperties: false
+      x-internal: true
     RappresentanteFiscale:
       type: object
       properties:
         dati_anagrafici:
           $ref: '#/components/schemas/DatiAnagrafici'
       additionalProperties: false
+      x-internal: true
     RappresentanteFiscaleCessionarioCommittente:
       type: object
       properties:
@@ -2553,6 +2672,7 @@ components:
         id_fiscale_iva:
           $ref: '#/components/schemas/IdFiscaleIVA'
       additionalProperties: false
+      x-internal: true
     Receive:
       required:
         - payload
@@ -2632,6 +2752,7 @@ components:
           description: SDI message id.
           nullable: true
       additionalProperties: false
+      description: A received invoice.
     ScontoMaggiorazione:
       type: object
       properties:
@@ -2647,6 +2768,7 @@ components:
           format: double
           nullable: true
       additionalProperties: false
+      x-internal: true
     SedeCedentePrestatore:
       type: object
       properties:
@@ -2670,6 +2792,7 @@ components:
           default: IT
           nullable: true
       additionalProperties: false
+      x-internal: true
     SedeCessionarioCommittente:
       type: object
       properties:
@@ -2693,6 +2816,7 @@ components:
           default: IT
           nullable: true
       additionalProperties: false
+      x-internal: true
     Send:
       required:
         - payload
@@ -2773,6 +2897,7 @@ components:
         company:
           $ref: '#/components/schemas/Company'
       additionalProperties: false
+      description: A sent invoice.
     SendReduced:
       type: object
       properties:
@@ -2803,6 +2928,7 @@ components:
           nullable: true
       additionalProperties: false
       description: 'Reduced Send data for Update responses, containing only the essential fields.'
+      x-internal: true
     StabileOrganizzazione:
       type: object
       properties:
@@ -2826,6 +2952,7 @@ components:
           default: IT
           nullable: true
       additionalProperties: false
+      x-internal: true
     Status:
       type: object
       properties:
@@ -2838,12 +2965,14 @@ components:
           description: Signatures left.
           format: int32
       additionalProperties: false
+      description: Account status with remaining operations and signatures.
     TerzoIntermediarioOSoggettoEmittente:
       type: object
       properties:
         dati_anagrafici:
           $ref: '#/components/schemas/DatiAnagrafici'
       additionalProperties: false
+      x-internal: true
     Update:
       type: object
       properties:
@@ -2908,6 +3037,7 @@ components:
         send:
           $ref: '#/components/schemas/SendReduced'
       additionalProperties: false
+      description: An SDI status update for a sent invoice.
     WebHook:
       required:
         - url
@@ -2956,6 +3086,7 @@ components:
           description: "List of events that trigger the webhook.\r\nSee Invoicetronic.SupportedEvents.Available for a list of valid event names."
           nullable: true
       additionalProperties: false
+      description: A webhook subscription.
     WebHookHistory:
       type: object
       properties:
