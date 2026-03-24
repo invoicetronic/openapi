@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.0.4
 info:
   title: Invoicetronic API
   description: "The [Invoicetronic API][2] is a RESTful service that allows you to send and receive invoices through the Italian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed to be simple and easy to use, abstracting away SDI complexity while providing complete control over the invoice send/receive process. It provides advanced features as encryption at rest, multi-language pre-flight invoice validation, multiple upload formats, webhooks, event logging, client SDKs, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/"
@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1'
+  version: '1.4.0'
 paths:
   '/company/{id}':
     get:
@@ -61,24 +61,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Company'
-        '422':
-          description: Unprocessable Content
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
-        '409':
-          description: Conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
   '/company/{vat}':
@@ -102,12 +84,6 @@ paths:
                 $ref: '#/components/schemas/Company'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
   /company:
     get:
       tags:
@@ -150,12 +126,6 @@ paths:
                   $ref: '#/components/schemas/Company'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
     post:
       tags:
         - company
@@ -174,12 +144,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Company'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -210,12 +174,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
   /export:
     get:
       tags:
@@ -402,12 +360,6 @@ paths:
                   $ref: '#/components/schemas/Event'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
   '/receive/{id}':
     get:
       tags:
@@ -457,24 +409,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Receive'
-        '422':
-          description: Unprocessable Content
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
-        '409':
-          description: Conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
   '/receive/{id}/payload':
@@ -619,12 +553,6 @@ paths:
                   $ref: '#/components/schemas/Receive'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
   '/send/{id}':
     get:
       tags:
@@ -681,12 +609,6 @@ paths:
                 $ref: '#/components/schemas/Send'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
   '/send/{id}/payload':
     get:
       tags:
@@ -824,12 +746,6 @@ paths:
                   $ref: '#/components/schemas/Send'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
     post:
       tags:
         - send
@@ -867,12 +783,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -917,12 +827,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -975,12 +879,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -1025,12 +923,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -1052,12 +944,6 @@ paths:
       responses:
         '204':
           description: No Content
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -1079,12 +965,6 @@ paths:
       responses:
         '204':
           description: No Content
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -1114,12 +994,6 @@ paths:
       responses:
         '204':
           description: No Content
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -1141,12 +1015,6 @@ paths:
       responses:
         '204':
           description: No Content
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -1293,12 +1161,6 @@ paths:
                   $ref: '#/components/schemas/Update'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
   '/webhook/{id}':
     get:
       tags:
@@ -1342,24 +1204,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WebHook'
-        '422':
-          description: Unprocessable Content
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
-        '409':
-          description: Conflict
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '404':
           description: Not Found
   /webhook:
@@ -1421,12 +1265,6 @@ paths:
                   $ref: '#/components/schemas/WebHook'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
     post:
       tags:
         - webhook
@@ -1445,12 +1283,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WebHook'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
         '422':
           description: Unprocessable Content
           content:
@@ -1481,12 +1313,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
   '/webhookhistory/{id}':
     get:
       tags:
@@ -1553,12 +1379,6 @@ paths:
                   $ref: '#/components/schemas/WebHookHistory'
         '404':
           description: Not Found
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemHttpResult'
 components:
   schemas:
     Allegati:
@@ -2658,21 +2478,6 @@ components:
           nullable: true
       additionalProperties: { }
       x-internal: true
-    ProblemHttpResult:
-      type: object
-      properties:
-        problem_details:
-          $ref: '#/components/schemas/ProblemDetails'
-        content_type:
-          type: string
-          nullable: true
-          readOnly: true
-        status_code:
-          type: integer
-          format: int32
-          readOnly: true
-      additionalProperties: false
-      x-internal: true
     RappresentanteFiscale:
       type: object
       properties:
@@ -2719,7 +2524,7 @@ components:
           format: int32
         company_id:
           type: integer
-          description: "Company id. On send, this is the sender and must be set in advance. On receive, it will be\r\nautomatically set based on the recipient's VAT number. If a matching company is not found, the invoice will be rejected until the company is created."
+          description: "Company id. On send, this is the sender and must be set in advance. On receive, it will be\nautomatically set based on the recipient's VAT number. If a matching company is not found, the invoice will be rejected until the company is created."
           format: int32
         committente:
           type: string
@@ -2867,7 +2672,7 @@ components:
           format: int32
         company_id:
           type: integer
-          description: "Company id. On send, this is the sender and must be set in advance. On receive, it will be\r\nautomatically set based on the recipient's VAT number. If a matching company is not found, the invoice will be rejected until the company is created."
+          description: "Company id. On send, this is the sender and must be set in advance. On receive, it will be\nautomatically set based on the recipient's VAT number. If a matching company is not found, the invoice will be rejected until the company is created."
           format: int32
         committente:
           type: string
@@ -3114,7 +2919,7 @@ components:
           type: array
           items:
             type: string
-          description: "List of events that trigger the webhook.\r\nSee Invoicetronic.SupportedEvents.Available for a list of valid event names."
+          description: "List of events that trigger the webhook.\nSee Invoicetronic.SupportedEvents.Available for a list of valid event names."
           nullable: true
       additionalProperties: false
       description: A webhook subscription.
@@ -3165,4 +2970,14 @@ components:
       description: 'Use your API key as the basic auth username, and an empty password. If you don''t have an API key, you can get one by signing up at [Invoicetronic](https://invoicetronic.com).'
       scheme: basic
 security:
-  - Basic: [ ]
+  - { }
+tags:
+  - name: company
+  - name: export
+  - name: health
+  - name: log
+  - name: receive
+  - name: send
+  - name: status
+  - name: update
+  - name: webhook
