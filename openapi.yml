@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.5.1'
+  version: '1.6.0'
 paths:
   '/company/{id}':
     get:
@@ -349,6 +349,10 @@ paths:
           schema:
             type: string
             format: date-time
+        - name: user_agent
+          in: query
+          schema:
+            type: string
       responses:
         '200':
           description: OK
@@ -2309,6 +2313,11 @@ components:
           type: integer
           description: ID of the resource created or modified by this request.
           format: int32
+          nullable: true
+        user_agent:
+          maxLength: 512
+          type: string
+          description: User-Agent header from the HTTP request.
           nullable: true
         success:
           type: boolean
