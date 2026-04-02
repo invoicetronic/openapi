@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.6.3'
+  version: '1.6.4'
 paths:
   '/company/{id}':
     get:
@@ -2979,7 +2979,7 @@ components:
       description: 'Use your API key as the basic auth username, and an empty password. If you don''t have an API key, you can get one by signing up at [Invoicetronic](https://invoicetronic.com).'
       scheme: basic
 security:
-  - { }
+  - Basic: [ ]
 tags:
   - name: company
   - name: export
