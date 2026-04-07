@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.6.5'
+  version: '1.7.0'
 paths:
   '/company/{id}':
     get:
@@ -2809,6 +2809,12 @@ components:
           type: integer
           description: Signatures left.
           format: int32
+        has_active_seat:
+          type: boolean
+          description: Whether the current API key has an active Desk seat.
+        is_sub_key:
+          type: boolean
+          description: Whether the current API key is a sub-key (restricted key).
       additionalProperties: false
       description: Account status with remaining operations and signatures.
     TerzoIntermediarioOSoggettoEmittente:
