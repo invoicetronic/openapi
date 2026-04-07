@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.7.0'
+  version: '1.7.1'
 paths:
   '/company/{id}':
     get:
