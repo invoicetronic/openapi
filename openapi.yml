@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.7.6'
+  version: '1.8.0'
 paths:
   '/company/{id}':
     get:
@@ -3024,6 +3024,10 @@ components:
           type: integer
           description: 'HTTP status code returned by the webhook endpoint. A value of 0 means the request could not be completed due to a network error (e.g., DNS resolution failure, connection refused, or timeout). This typically indicates that the endpoint URL is misconfigured or no longer exists.'
           format: int32
+        error:
+          type: string
+          description: 'Error description, if any. Null when the delivery is successful (2xx). Contains the exception message for network errors (status code 0) or the response body for non-2xx HTTP responses.'
+          nullable: true
         date_time:
           type: string
           description: Date and time of the request.
