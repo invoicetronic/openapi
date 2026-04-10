@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.8.0'
+  version: '1.8.1'
 paths:
   '/company/{id}':
     get:
@@ -2988,6 +2988,12 @@ components:
           example:
             - send.add
             - receive.add
+        failure_notified_at:
+          type: string
+          description: Timestamp of the last failure notification email sent for this webhook. Set by the notifier service; reset to null on successful delivery.
+          format: date-time
+          nullable: true
+          readOnly: true
       additionalProperties: false
       description: A webhook subscription.
     WebHookHistory:
