@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.11.1'
+  version: '1.12.0'
 paths:
   '/company/{id}':
     get:
@@ -641,7 +641,7 @@ paths:
       tags:
         - send
       summary: List invoices
-      description: "Retrieve a paginated list of send invoices. Results can be filtered by various criteria such as company, date ranges, document number, and free-text search (`q`). Returns invoice metadata; set `include_payload` to true to include the full invoice content.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
+      description: "Retrieve a paginated list of send invoices. Results can be filtered by various criteria such as company, date ranges, document number, and free-text search (`q`). Use `ids` to fetch specific Send records in a single call (comma-separated, up to 100). Returns invoice metadata; set `include_payload` to true to include the full invoice content.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: company_id
           in: query
@@ -715,6 +715,11 @@ paths:
           description: Include payload in the response. Defaults to false.
           schema:
             type: boolean
+        - name: ids
+          in: query
+          description: Comma-separated list of Send ids (max 100). Filters the collection to the matching rows; unknown or unauthorized ids are silently skipped.
+          schema:
+            type: string
         - name: page
           in: query
           description: Page number.
@@ -2777,6 +2782,21 @@ components:
           nullable: true
           example:
             order_id: ORD-123
+        latest_state:
+          enum:
+            - Inviato
+            - Consegnato
+            - NonConsegnato
+            - Scartato
+            - AccettatoDalDestinatario
+            - RifiutatoDalDestinatario
+            - ImpossibilitaDiRecapito
+            - DecorrenzaTermini
+            - AttestazioneTrasmissioneFattura
+          type: string
+          description: "Current SDI state of the invoice. Reflects the most recent update received from SDI.\nNull when no update has been received yet."
+          nullable: true
+          readOnly: true
         company:
           $ref: '#/components/schemas/Company'
       additionalProperties: false
@@ -2808,6 +2828,20 @@ components:
           type: string
           description: When the invoice was sent to SDI.
           format: date-time
+          nullable: true
+        latest_state:
+          enum:
+            - Inviato
+            - Consegnato
+            - NonConsegnato
+            - Scartato
+            - AccettatoDalDestinatario
+            - RifiutatoDalDestinatario
+            - ImpossibilitaDiRecapito
+            - DecorrenzaTermini
+            - AttestazioneTrasmissioneFattura
+          type: string
+          description: Current SDI state of the invoice. Reflects the most recent update received from SDI.
           nullable: true
       additionalProperties: false
       description: 'Reduced Send data for Update responses, containing only the essential fields.'
