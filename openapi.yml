@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.12.3'
+  version: '1.13.0'
 paths:
   '/company/{id}':
     get:
@@ -641,7 +641,7 @@ paths:
       tags:
         - send
       summary: List invoices
-      description: "Retrieve a paginated list of send invoices. Results can be filtered by various criteria such as company, date ranges, document number, and free-text search (`q`). Use `ids` to fetch specific Send records in a single call (comma-separated, up to 100). Returns invoice metadata; set `include_payload` to true to include the full invoice content.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
+      description: "Retrieve a paginated list of send invoices. Results can be filtered by various criteria such as company, date ranges, document number, current SDI state (`latest_state`), and free-text search (`q`). Use `ids` to fetch specific Send records in a single call (comma-separated, up to 100). Returns invoice metadata; set `include_payload` to true to include the full invoice content.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       parameters:
         - name: company_id
           in: query
@@ -709,6 +709,21 @@ paths:
           in: query
           description: Document number.
           schema:
+            type: string
+        - name: latest_state
+          in: query
+          description: Filter by the most recent SDI state for the invoice. Matches the `latest_state` field exposed inline on each Send.
+          schema:
+            enum:
+              - Inviato
+              - Consegnato
+              - NonConsegnato
+              - Scartato
+              - AccettatoDalDestinatario
+              - RifiutatoDalDestinatario
+              - ImpossibilitaDiRecapito
+              - DecorrenzaTermini
+              - AttestazioneTrasmissioneFattura
             type: string
         - name: include_payload
           in: query
