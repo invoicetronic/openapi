@@ -1,7 +1,7 @@
 openapi: 3.0.4
 info:
   title: Invoicetronic API
-  description: "The [Invoicetronic API][2] is a RESTful service that allows you to send and receive invoices through the Italian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed to be simple and easy to use, abstracting away SDI complexity while providing complete control over the invoice send/receive process. It provides advanced features as encryption at rest, multi-language pre-flight invoice validation, multiple upload formats, webhooks, event logging, client SDKs, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/"
+  description: "The [Invoicetronic API][2] is a RESTful service that allows you to send and receive invoices through the Italian [Servizio di Interscambio (SDI)][1], or Interchange Service. The API is designed to be simple and easy to use, abstracting away SDI complexity while providing complete control over the invoice send/receive process. It provides advanced features as encryption at rest, multi-language pre-flight invoice validation, multiple upload formats, webhooks, event logging, client SDKs, and CLI tools.\n\nFor more information, see  [Invoicetronic website][2]\n\n## Before you start\n\nFor the full integration guide, tutorials, SDKs and quickstarts, see the **[Documentation](https://invoicetronic.com/en/docs/)**. A few cross-cutting topics worth knowing before integrating:\n\n- **[Prerequisites](https://invoicetronic.com/en/docs/prerequisites/)** — what you need to start in Sandbox and what's required to move to production.\n- **[API Keys](https://invoicetronic.com/en/docs/apikeys/)** — how `ik_live_` and `ik_test_` keys select the environment.\n- **[Sandbox](https://invoicetronic.com/en/docs/sandbox/)** — free test environment that mirrors the live workflow, with no credits consumed.\n- **[Rate Limiting](https://invoicetronic.com/en/docs/ratelimiting/)** — per-second, per-minute and per-day limits; how to handle `429 Too Many Requests`.\n- **[Pagination](https://invoicetronic.com/en/docs/pagination/)** — `page` and `page_size` parameters and the `Invoicetronic-Total-Count` response header.\n- **[CORS](https://invoicetronic.com/en/docs/cors/)** — calling the API from the browser; allowed origins are configured per key.\n- **[Webhooks](https://invoicetronic.com/en/docs/webhooks/)** — real-time event notifications with HMAC-SHA256 signature validation.\n- **[Localization](https://invoicetronic.com/en/docs/accept-language/)** — use the `Accept-Language` header to receive error messages in Italian, English or German.\n\n[1]: https://www.fatturapa.gov.it/it/sistemainterscambio/cose-il-sdi/\n[2]: https://invoicetronic.com/\n"
   termsOfService: https://invoicetronic.com/tos
   contact:
     name: Invoicetronic
@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.13.0'
+  version: '1.13.1'
 paths:
   '/company/{id}':
     get:
@@ -914,7 +914,7 @@ paths:
       tags:
         - send
       summary: Add an invoice by json
-      description: "Add a new invoice using a FatturaPA JSON representation. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com)."
+      description: "Add a new invoice using a FatturaPA JSON representation. Property names mirror the FatturaPA XML schema (PascalCase, e.g. `FatturaElettronicaHeader`). The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com)."
       parameters:
         - name: validate
           in: query
@@ -1029,7 +1029,7 @@ paths:
       tags:
         - send
       summary: Validate an invoice by json
-      description: "Validate a JSON invoice without sending it to SDI. Use this to check for errors before actual submission. Returns validation results with any errors found.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
+      description: "Validate a FatturaPA JSON invoice without sending it to SDI. Property names mirror the FatturaPA XML schema (PascalCase, e.g. `FatturaElettronicaHeader`). Use this to check for errors before actual submission. Returns validation results with any errors found.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       requestBody:
         content:
           application/json:
@@ -1408,19 +1408,19 @@ components:
     Allegati:
       type: object
       properties:
-        nome_attachment:
+        NomeAttachment:
           type: string
           nullable: true
-        algoritmo_compressione:
+        AlgoritmoCompressione:
           type: string
           nullable: true
-        formato_attachment:
+        FormatoAttachment:
           type: string
           nullable: true
-        descrizione_attachment:
+        DescrizioneAttachment:
           type: string
           nullable: true
-        attachment:
+        Attachment:
           type: string
           format: byte
           nullable: true
@@ -1429,17 +1429,17 @@ components:
     AltriDatiGestionali:
       type: object
       properties:
-        tipo_dato:
+        TipoDato:
           type: string
           nullable: true
-        riferimento_testo:
+        RiferimentoTesto:
           type: string
           nullable: true
-        riferimento_numero:
+        RiferimentoNumero:
           type: number
           format: double
           nullable: true
-        riferimento_data:
+        RiferimentoData:
           type: string
           format: date-time
           nullable: true
@@ -1448,19 +1448,19 @@ components:
     Anagrafica:
       type: object
       properties:
-        denominazione:
+        Denominazione:
           type: string
           nullable: true
-        nome:
+        Nome:
           type: string
           nullable: true
-        cognome:
+        Cognome:
           type: string
           nullable: true
-        titolo:
+        Titolo:
           type: string
           nullable: true
-        cod_eori:
+        CodEORI:
           type: string
           nullable: true
       additionalProperties: false
@@ -1468,17 +1468,17 @@ components:
     CedentePrestatore:
       type: object
       properties:
-        dati_anagrafici:
+        DatiAnagrafici:
           $ref: '#/components/schemas/DatiAnagraficiCedentePrestatore'
-        sede:
+        Sede:
           $ref: '#/components/schemas/SedeCedentePrestatore'
-        stabile_organizzazione:
+        StabileOrganizzazione:
           $ref: '#/components/schemas/StabileOrganizzazione'
-        iscrizione_rea:
+        IscrizioneREA:
           $ref: '#/components/schemas/IscrizioneREA'
-        contatti:
+        Contatti:
           $ref: '#/components/schemas/Contatti'
-        riferimento_amministrazione:
+        RiferimentoAmministrazione:
           type: string
           nullable: true
       additionalProperties: false
@@ -1486,23 +1486,23 @@ components:
     CessionarioCommittente:
       type: object
       properties:
-        dati_anagrafici:
+        DatiAnagrafici:
           $ref: '#/components/schemas/DatiAnagraficiCessionarioCommittente'
-        sede:
+        Sede:
           $ref: '#/components/schemas/SedeCessionarioCommittente'
-        stabile_organizzazione:
+        StabileOrganizzazione:
           $ref: '#/components/schemas/StabileOrganizzazione'
-        rappresentante_fiscale:
+        RappresentanteFiscale:
           $ref: '#/components/schemas/RappresentanteFiscaleCessionarioCommittente'
       additionalProperties: false
       x-internal: true
     CodiceArticolo:
       type: object
       properties:
-        codice_tipo:
+        CodiceTipo:
           type: string
           nullable: true
-        codice_valore:
+        CodiceValore:
           type: string
           nullable: true
       additionalProperties: false
@@ -1554,13 +1554,13 @@ components:
     Contatti:
       type: object
       properties:
-        telefono:
+        Telefono:
           type: string
           nullable: true
-        fax:
+        Fax:
           type: string
           nullable: true
-        email:
+        Email:
           type: string
           nullable: true
       additionalProperties: false
@@ -1568,10 +1568,10 @@ components:
     ContattiTrasmittente:
       type: object
       properties:
-        telefono:
+        Telefono:
           type: string
           nullable: true
-        email:
+        Email:
           type: string
           nullable: true
       additionalProperties: false
@@ -1579,39 +1579,39 @@ components:
     DatiAnagrafici:
       type: object
       properties:
-        id_fiscale_iva:
+        IdFiscaleIVA:
           $ref: '#/components/schemas/IdFiscaleIVA'
-        codice_fiscale:
+        CodiceFiscale:
           type: string
           nullable: true
-        anagrafica:
+        Anagrafica:
           $ref: '#/components/schemas/Anagrafica'
       additionalProperties: false
       x-internal: true
     DatiAnagraficiCedentePrestatore:
       type: object
       properties:
-        id_fiscale_iva:
+        IdFiscaleIVA:
           $ref: '#/components/schemas/IdFiscaleIVA'
-        codice_fiscale:
+        CodiceFiscale:
           type: string
           nullable: true
-        anagrafica:
+        Anagrafica:
           $ref: '#/components/schemas/Anagrafica'
-        albo_professionale:
+        AlboProfessionale:
           type: string
           nullable: true
-        provincia_albo:
+        ProvinciaAlbo:
           type: string
           nullable: true
-        numero_iscrizione_albo:
+        NumeroIscrizioneAlbo:
           type: string
           nullable: true
-        data_iscrizione_albo:
+        DataIscrizioneAlbo:
           type: string
           format: date-time
           nullable: true
-        regime_fiscale:
+        RegimeFiscale:
           type: string
           nullable: true
       additionalProperties: false
@@ -1619,26 +1619,26 @@ components:
     DatiAnagraficiCessionarioCommittente:
       type: object
       properties:
-        id_fiscale_iva:
+        IdFiscaleIVA:
           $ref: '#/components/schemas/IdFiscaleIVA'
-        codice_fiscale:
+        CodiceFiscale:
           type: string
           nullable: true
-        anagrafica:
+        Anagrafica:
           $ref: '#/components/schemas/Anagrafica'
       additionalProperties: false
       x-internal: true
     DatiAnagraficiVettore:
       type: object
       properties:
-        id_fiscale_iva:
+        IdFiscaleIVA:
           $ref: '#/components/schemas/IdFiscaleIVA'
-        codice_fiscale:
+        CodiceFiscale:
           type: string
           nullable: true
-        anagrafica:
+        Anagrafica:
           $ref: '#/components/schemas/Anagrafica'
-        numero_licenza_guida:
+        NumeroLicenzaGuida:
           type: string
           nullable: true
       additionalProperties: false
@@ -1646,12 +1646,12 @@ components:
     DatiBeniServizi:
       type: object
       properties:
-        dettaglio_linee:
+        DettaglioLinee:
           type: array
           items:
             $ref: '#/components/schemas/DettaglioLinee'
           nullable: true
-        dati_riepilogo:
+        DatiRiepilogo:
           type: array
           items:
             $ref: '#/components/schemas/DatiRiepilogo'
@@ -1661,10 +1661,10 @@ components:
     DatiBollo:
       type: object
       properties:
-        bollo_virtuale:
+        BolloVirtuale:
           type: string
           nullable: true
-        importo_bollo:
+        ImportoBollo:
           type: number
           format: double
           nullable: true
@@ -1673,28 +1673,28 @@ components:
     DatiCassaPrevidenziale:
       type: object
       properties:
-        tipo_cassa:
+        TipoCassa:
           type: string
           nullable: true
-        al_cassa:
+        AlCassa:
           type: number
           format: double
-        importo_contributo_cassa:
+        ImportoContributoCassa:
           type: number
           format: double
-        imponibile_cassa:
+        ImponibileCassa:
           type: number
           format: double
-        aliquota_iva:
+        AliquotaIVA:
           type: number
           format: double
-        ritenuta:
+        Ritenuta:
           type: string
           nullable: true
-        natura:
+        Natura:
           type: string
           nullable: true
-        riferimento_amministrazione:
+        RiferimentoAmministrazione:
           type: string
           nullable: true
       additionalProperties: false
@@ -1702,29 +1702,29 @@ components:
     DatiContratto:
       type: object
       properties:
-        riferimento_numero_linea:
+        RiferimentoNumeroLinea:
           type: array
           items:
             type: integer
             format: int32
           nullable: true
-        id_documento:
+        IdDocumento:
           type: string
           nullable: true
-        data:
+        Data:
           type: string
           format: date-time
           nullable: true
-        num_item:
+        NumItem:
           type: string
           nullable: true
-        codice_commessa_convenzione:
+        CodiceCommessaConvenzione:
           type: string
           nullable: true
-        codice_cup:
+        CodiceCUP:
           type: string
           nullable: true
-        codice_cig:
+        CodiceCIG:
           type: string
           nullable: true
       additionalProperties: false
@@ -1732,29 +1732,29 @@ components:
     DatiConvenzione:
       type: object
       properties:
-        riferimento_numero_linea:
+        RiferimentoNumeroLinea:
           type: array
           items:
             type: integer
             format: int32
           nullable: true
-        id_documento:
+        IdDocumento:
           type: string
           nullable: true
-        data:
+        Data:
           type: string
           format: date-time
           nullable: true
-        num_item:
+        NumItem:
           type: string
           nullable: true
-        codice_commessa_convenzione:
+        CodiceCommessaConvenzione:
           type: string
           nullable: true
-        codice_cup:
+        CodiceCUP:
           type: string
           nullable: true
-        codice_cig:
+        CodiceCIG:
           type: string
           nullable: true
       additionalProperties: false
@@ -1762,13 +1762,13 @@ components:
     DatiDDT:
       type: object
       properties:
-        numero_ddt:
+        NumeroDDT:
           type: string
           nullable: true
-        data_ddt:
+        DataDDT:
           type: string
           format: date-time
-        riferimento_numero_linea:
+        RiferimentoNumeroLinea:
           type: array
           items:
             type: integer
@@ -1779,29 +1779,29 @@ components:
     DatiFattureCollegate:
       type: object
       properties:
-        riferimento_numero_linea:
+        RiferimentoNumeroLinea:
           type: array
           items:
             type: integer
             format: int32
           nullable: true
-        id_documento:
+        IdDocumento:
           type: string
           nullable: true
-        data:
+        Data:
           type: string
           format: date-time
           nullable: true
-        num_item:
+        NumItem:
           type: string
           nullable: true
-        codice_commessa_convenzione:
+        CodiceCommessaConvenzione:
           type: string
           nullable: true
-        codice_cup:
+        CodiceCUP:
           type: string
           nullable: true
-        codice_cig:
+        CodiceCIG:
           type: string
           nullable: true
       additionalProperties: false
@@ -1809,95 +1809,95 @@ components:
     DatiGenerali:
       type: object
       properties:
-        dati_generali_documento:
+        DatiGeneraliDocumento:
           $ref: '#/components/schemas/DatiGeneraliDocumento'
-        dati_ordine_acquisto:
+        DatiOrdineAcquisto:
           type: array
           items:
             $ref: '#/components/schemas/DatiOrdineAcquisto'
           nullable: true
-        dati_contratto:
+        DatiContratto:
           type: array
           items:
             $ref: '#/components/schemas/DatiContratto'
           nullable: true
-        dati_convenzione:
+        DatiConvenzione:
           type: array
           items:
             $ref: '#/components/schemas/DatiConvenzione'
           nullable: true
-        dati_ricezione:
+        DatiRicezione:
           type: array
           items:
             $ref: '#/components/schemas/DatiRicezione'
           nullable: true
-        dati_fatture_collegate:
+        DatiFattureCollegate:
           type: array
           items:
             $ref: '#/components/schemas/DatiFattureCollegate'
           nullable: true
-        dati_sal:
+        DatiSAL:
           type: array
           items:
             $ref: '#/components/schemas/DatiSAL'
           nullable: true
-        dati_ddt:
+        DatiDDT:
           type: array
           items:
             $ref: '#/components/schemas/DatiDDT'
           nullable: true
-        dati_trasporto:
+        DatiTrasporto:
           $ref: '#/components/schemas/DatiTrasporto'
-        fattura_principale:
+        FatturaPrincipale:
           $ref: '#/components/schemas/FatturaPrincipale'
       additionalProperties: false
       x-internal: true
     DatiGeneraliDocumento:
       type: object
       properties:
-        tipo_documento:
+        TipoDocumento:
           type: string
           nullable: true
-        divisa:
+        Divisa:
           type: string
           nullable: true
-        data:
+        Data:
           type: string
           format: date-time
-        numero:
+        Numero:
           type: string
           nullable: true
-        dati_ritenuta:
+        DatiRitenuta:
           type: array
           items:
             $ref: '#/components/schemas/DatiRitenuta'
           nullable: true
-        dati_bollo:
+        DatiBollo:
           $ref: '#/components/schemas/DatiBollo'
-        dati_cassa_previdenziale:
+        DatiCassaPrevidenziale:
           type: array
           items:
             $ref: '#/components/schemas/DatiCassaPrevidenziale'
           nullable: true
-        sconto_maggiorazione:
+        ScontoMaggiorazione:
           type: array
           items:
             $ref: '#/components/schemas/ScontoMaggiorazione'
           nullable: true
-        importo_totale_documento:
+        ImportoTotaleDocumento:
           type: number
           format: double
           nullable: true
-        arrotondamento:
+        Arrotondamento:
           type: number
           format: double
           nullable: true
-        causale:
+        Causale:
           type: array
           items:
             type: string
           nullable: true
-        art73:
+        Art73:
           type: string
           nullable: true
       additionalProperties: false
@@ -1905,29 +1905,29 @@ components:
     DatiOrdineAcquisto:
       type: object
       properties:
-        riferimento_numero_linea:
+        RiferimentoNumeroLinea:
           type: array
           items:
             type: integer
             format: int32
           nullable: true
-        id_documento:
+        IdDocumento:
           type: string
           nullable: true
-        data:
+        Data:
           type: string
           format: date-time
           nullable: true
-        num_item:
+        NumItem:
           type: string
           nullable: true
-        codice_commessa_convenzione:
+        CodiceCommessaConvenzione:
           type: string
           nullable: true
-        codice_cup:
+        CodiceCUP:
           type: string
           nullable: true
-        codice_cig:
+        CodiceCIG:
           type: string
           nullable: true
       additionalProperties: false
@@ -1935,10 +1935,10 @@ components:
     DatiPagamento:
       type: object
       properties:
-        condizioni_pagamento:
+        CondizioniPagamento:
           type: string
           nullable: true
-        dettaglio_pagamento:
+        DettaglioPagamento:
           type: array
           items:
             $ref: '#/components/schemas/DettaglioPagamento'
@@ -1948,29 +1948,29 @@ components:
     DatiRicezione:
       type: object
       properties:
-        riferimento_numero_linea:
+        RiferimentoNumeroLinea:
           type: array
           items:
             type: integer
             format: int32
           nullable: true
-        id_documento:
+        IdDocumento:
           type: string
           nullable: true
-        data:
+        Data:
           type: string
           format: date-time
           nullable: true
-        num_item:
+        NumItem:
           type: string
           nullable: true
-        codice_commessa_convenzione:
+        CodiceCommessaConvenzione:
           type: string
           nullable: true
-        codice_cup:
+        CodiceCUP:
           type: string
           nullable: true
-        codice_cig:
+        CodiceCIG:
           type: string
           nullable: true
       additionalProperties: false
@@ -1978,30 +1978,30 @@ components:
     DatiRiepilogo:
       type: object
       properties:
-        aliquota_iva:
+        AliquotaIVA:
           type: number
           format: double
-        natura:
+        Natura:
           type: string
           nullable: true
-        spese_accessorie:
+        SpeseAccessorie:
           type: number
           format: double
           nullable: true
-        arrotondamento:
+        Arrotondamento:
           type: number
           format: double
           nullable: true
-        imponibile_importo:
+        ImponibileImporto:
           type: number
           format: double
-        imposta:
+        Imposta:
           type: number
           format: double
-        esigibilita_iva:
+        EsigibilitaIVA:
           type: string
           nullable: true
-        riferimento_normativo:
+        RiferimentoNormativo:
           type: string
           nullable: true
       additionalProperties: false
@@ -2009,16 +2009,16 @@ components:
     DatiRitenuta:
       type: object
       properties:
-        tipo_ritenuta:
+        TipoRitenuta:
           type: string
           nullable: true
-        importo_ritenuta:
+        ImportoRitenuta:
           type: number
           format: double
-        aliquota_ritenuta:
+        AliquotaRitenuta:
           type: number
           format: double
-        causale_pagamento:
+        CausalePagamento:
           type: string
           nullable: true
       additionalProperties: false
@@ -2026,7 +2026,7 @@ components:
     DatiSAL:
       type: object
       properties:
-        riferimento_fase:
+        RiferimentoFase:
           type: integer
           format: int32
       additionalProperties: false
@@ -2034,20 +2034,20 @@ components:
     DatiTrasmissione:
       type: object
       properties:
-        id_trasmittente:
+        IdTrasmittente:
           $ref: '#/components/schemas/IdTrasmittente'
-        progressivo_invio:
+        ProgressivoInvio:
           type: string
           nullable: true
-        formato_trasmissione:
+        FormatoTrasmissione:
           type: string
           nullable: true
-        codice_destinatario:
+        CodiceDestinatario:
           type: string
           nullable: true
-        contatti_trasmittente:
+        ContattiTrasmittente:
           $ref: '#/components/schemas/ContattiTrasmittente'
-        pec_destinatario:
+        PECDestinatario:
           type: string
           nullable: true
       additionalProperties: false
@@ -2055,46 +2055,46 @@ components:
     DatiTrasporto:
       type: object
       properties:
-        dati_anagrafici_vettore:
+        DatiAnagraficiVettore:
           $ref: '#/components/schemas/DatiAnagraficiVettore'
-        mezzo_trasporto:
+        MezzoTrasporto:
           type: string
           nullable: true
-        causale_trasporto:
+        CausaleTrasporto:
           type: string
           nullable: true
-        numero_colli:
+        NumeroColli:
           type: integer
           format: int32
           nullable: true
-        descrizione:
+        Descrizione:
           type: string
           nullable: true
-        unita_misura_peso:
+        UnitaMisuraPeso:
           type: string
           nullable: true
-        peso_lordo:
+        PesoLordo:
           type: number
           format: double
           nullable: true
-        peso_netto:
+        PesoNetto:
           type: number
           format: double
           nullable: true
-        data_ora_ritiro:
+        DataOraRitiro:
           type: string
           format: date-time
           nullable: true
-        data_inizio_trasporto:
+        DataInizioTrasporto:
           type: string
           format: date-time
           nullable: true
-        tipo_resa:
+        TipoResa:
           type: string
           nullable: true
-        indirizzo_resa:
+        IndirizzoResa:
           $ref: '#/components/schemas/IndirizzoResa'
-        data_ora_consegna:
+        DataOraConsegna:
           type: string
           format: date-time
           nullable: true
@@ -2103,11 +2103,11 @@ components:
     DatiVeicoli:
       type: object
       properties:
-        data:
+        Data:
           type: string
           format: date-time
           nullable: true
-        totale_percorso:
+        TotalePercorso:
           type: string
           nullable: true
       additionalProperties: false
@@ -2115,59 +2115,59 @@ components:
     DettaglioLinee:
       type: object
       properties:
-        numero_linea:
+        NumeroLinea:
           type: integer
           format: int32
-        tipo_cessione_prestazione:
+        TipoCessionePrestazione:
           type: string
           nullable: true
-        codice_articolo:
+        CodiceArticolo:
           type: array
           items:
             $ref: '#/components/schemas/CodiceArticolo'
           nullable: true
-        descrizione:
+        Descrizione:
           type: string
           nullable: true
-        quantita:
+        Quantita:
           type: number
           format: double
           nullable: true
-        unita_misura:
+        UnitaMisura:
           type: string
           nullable: true
-        data_inizio_periodo:
-          type: string
-          format: date-time
-          nullable: true
-        data_fine_periodo:
+        DataInizioPeriodo:
           type: string
           format: date-time
           nullable: true
-        prezzo_unitario:
+        DataFinePeriodo:
+          type: string
+          format: date-time
+          nullable: true
+        PrezzoUnitario:
           type: number
           format: double
-        sconto_maggiorazione:
+        ScontoMaggiorazione:
           type: array
           items:
             $ref: '#/components/schemas/ScontoMaggiorazione'
           nullable: true
-        prezzo_totale:
+        PrezzoTotale:
           type: number
           format: double
-        aliquota_iva:
+        AliquotaIVA:
           type: number
           format: double
-        ritenuta:
+        Ritenuta:
           type: string
           nullable: true
-        natura:
+        Natura:
           type: string
           nullable: true
-        riferimento_amministrazione:
+        RiferimentoAmministrazione:
           type: string
           nullable: true
-        altri_dati_gestionali:
+        AltriDatiGestionali:
           type: array
           items:
             $ref: '#/components/schemas/AltriDatiGestionali'
@@ -2177,74 +2177,74 @@ components:
     DettaglioPagamento:
       type: object
       properties:
-        beneficiario:
+        Beneficiario:
           type: string
           nullable: true
-        modalita_pagamento:
+        ModalitaPagamento:
           type: string
           nullable: true
-        data_riferimento_termini_pagamento:
+        DataRiferimentoTerminiPagamento:
           type: string
           format: date-time
           nullable: true
-        giorni_termini_pagamento:
+        GiorniTerminiPagamento:
           type: integer
           format: int32
           nullable: true
-        data_scadenza_pagamento:
+        DataScadenzaPagamento:
           type: string
           format: date-time
           nullable: true
-        importo_pagamento:
+        ImportoPagamento:
           type: number
           format: double
-        cod_ufficio_postale:
+        CodUfficioPostale:
           type: string
           nullable: true
-        cognome_quietanzante:
+        CognomeQuietanzante:
           type: string
           nullable: true
-        nome_quietanzante:
+        NomeQuietanzante:
           type: string
           nullable: true
-        cf_quietanzante:
+        CFQuietanzante:
           type: string
           nullable: true
-        titolo_quietanzante:
+        TitoloQuietanzante:
           type: string
           nullable: true
-        istituto_finanziario:
+        IstitutoFinanziario:
           type: string
           nullable: true
-        iban:
+        IBAN:
           type: string
           nullable: true
-        abi:
+        ABI:
           type: string
           nullable: true
-        cab:
+        CAB:
           type: string
           nullable: true
-        bic:
+        BIC:
           type: string
           nullable: true
-        sconto_pagamento_anticipato:
+        ScontoPagamentoAnticipato:
           type: number
           format: double
           nullable: true
-        data_limite_pagamento_anticipato:
+        DataLimitePagamentoAnticipato:
           type: string
           format: date-time
           nullable: true
-        penalita_pagamenti_ritardati:
+        PenalitaPagamentiRitardati:
           type: number
           format: double
           nullable: true
-        data_decorrenza_penale:
+        DataDecorrenzaPenale:
           type: string
           format: date-time
           nullable: true
-        codice_pagamento:
+        CodicePagamento:
           type: string
           nullable: true
       additionalProperties: false
@@ -2363,18 +2363,18 @@ components:
     FatturaElettronicaBody:
       type: object
       properties:
-        dati_generali:
+        DatiGenerali:
           $ref: '#/components/schemas/DatiGenerali'
-        dati_beni_servizi:
+        DatiBeniServizi:
           $ref: '#/components/schemas/DatiBeniServizi'
-        dati_veicoli:
+        DatiVeicoli:
           $ref: '#/components/schemas/DatiVeicoli'
-        dati_pagamento:
+        DatiPagamento:
           type: array
           items:
             $ref: '#/components/schemas/DatiPagamento'
           nullable: true
-        allegati:
+        Allegati:
           type: array
           items:
             $ref: '#/components/schemas/Allegati'
@@ -2384,17 +2384,17 @@ components:
     FatturaElettronicaHeader:
       type: object
       properties:
-        dati_trasmissione:
+        DatiTrasmissione:
           $ref: '#/components/schemas/DatiTrasmissione'
-        cedente_prestatore:
+        CedentePrestatore:
           $ref: '#/components/schemas/CedentePrestatore'
         RappresentanteFiscale:
           $ref: '#/components/schemas/RappresentanteFiscale'
-        cessionario_committente:
+        CessionarioCommittente:
           $ref: '#/components/schemas/CessionarioCommittente'
-        terzo_intermediario_o_soggetto_emittente:
+        TerzoIntermediarioOSoggettoEmittente:
           $ref: '#/components/schemas/TerzoIntermediarioOSoggettoEmittente'
-        soggetto_emittente:
+        SoggettoEmittente:
           type: string
           nullable: true
       additionalProperties: false
@@ -2402,12 +2402,12 @@ components:
     FatturaOrdinaria:
       type: object
       properties:
-        sistema_emittente:
+        SistemaEmittente:
           type: string
           nullable: true
-        fattura_elettronica_header:
+        FatturaElettronicaHeader:
           $ref: '#/components/schemas/FatturaElettronicaHeader'
-        fattura_elettronica_body:
+        FatturaElettronicaBody:
           type: array
           items:
             $ref: '#/components/schemas/FatturaElettronicaBody'
@@ -2417,10 +2417,10 @@ components:
     FatturaPrincipale:
       type: object
       properties:
-        numero_fattura_principale:
+        NumeroFatturaPrincipale:
           type: string
           nullable: true
-        data_fattura_principale:
+        DataFatturaPrincipale:
           type: string
           format: date-time
           nullable: true
@@ -2429,10 +2429,10 @@ components:
     IdFiscaleIVA:
       type: object
       properties:
-        id_paese:
+        IdPaese:
           type: string
           nullable: true
-        id_codice:
+        IdCodice:
           type: string
           nullable: true
       additionalProperties: false
@@ -2440,10 +2440,10 @@ components:
     IdTrasmittente:
       type: object
       properties:
-        id_paese:
+        IdPaese:
           type: string
           nullable: true
-        id_codice:
+        IdCodice:
           type: string
           nullable: true
       additionalProperties: false
@@ -2451,22 +2451,22 @@ components:
     IndirizzoResa:
       type: object
       properties:
-        indirizzo:
+        Indirizzo:
           type: string
           nullable: true
-        numero_civico:
+        NumeroCivico:
           type: string
           nullable: true
-        cap:
+        CAP:
           type: string
           nullable: true
-        comune:
+        Comune:
           type: string
           nullable: true
-        provincia:
+        Provincia:
           type: string
           nullable: true
-        nazione:
+        Nazione:
           type: string
           default: IT
           nullable: true
@@ -2475,20 +2475,20 @@ components:
     IscrizioneREA:
       type: object
       properties:
-        ufficio:
+        Ufficio:
           type: string
           nullable: true
-        numero_rea:
+        NumeroREA:
           type: string
           nullable: true
-        capitale_sociale:
+        CapitaleSociale:
           type: number
           format: double
           nullable: true
-        socio_unico:
+        SocioUnico:
           type: string
           nullable: true
-        stato_liquidazione:
+        StatoLiquidazione:
           type: string
           nullable: true
       additionalProperties: false
@@ -2517,23 +2517,23 @@ components:
     RappresentanteFiscale:
       type: object
       properties:
-        dati_anagrafici:
+        DatiAnagrafici:
           $ref: '#/components/schemas/DatiAnagrafici'
       additionalProperties: false
       x-internal: true
     RappresentanteFiscaleCessionarioCommittente:
       type: object
       properties:
-        denominazione:
+        Denominazione:
           type: string
           nullable: true
-        nome:
+        Nome:
           type: string
           nullable: true
-        cognome:
+        Cognome:
           type: string
           nullable: true
-        id_fiscale_iva:
+        IdFiscaleIVA:
           $ref: '#/components/schemas/IdFiscaleIVA'
       additionalProperties: false
       x-internal: true
@@ -2638,14 +2638,14 @@ components:
     ScontoMaggiorazione:
       type: object
       properties:
-        tipo:
+        Tipo:
           type: string
           nullable: true
-        percentuale:
+        Percentuale:
           type: number
           format: double
           nullable: true
-        importo:
+        Importo:
           type: number
           format: double
           nullable: true
@@ -2654,22 +2654,22 @@ components:
     SedeCedentePrestatore:
       type: object
       properties:
-        indirizzo:
+        Indirizzo:
           type: string
           nullable: true
-        numero_civico:
+        NumeroCivico:
           type: string
           nullable: true
-        cap:
+        CAP:
           type: string
           nullable: true
-        comune:
+        Comune:
           type: string
           nullable: true
-        provincia:
+        Provincia:
           type: string
           nullable: true
-        nazione:
+        Nazione:
           type: string
           default: IT
           nullable: true
@@ -2678,22 +2678,22 @@ components:
     SedeCessionarioCommittente:
       type: object
       properties:
-        indirizzo:
+        Indirizzo:
           type: string
           nullable: true
-        numero_civico:
+        NumeroCivico:
           type: string
           nullable: true
-        cap:
+        CAP:
           type: string
           nullable: true
-        comune:
+        Comune:
           type: string
           nullable: true
-        provincia:
+        Provincia:
           type: string
           nullable: true
-        nazione:
+        Nazione:
           type: string
           default: IT
           nullable: true
@@ -2864,22 +2864,22 @@ components:
     StabileOrganizzazione:
       type: object
       properties:
-        indirizzo:
+        Indirizzo:
           type: string
           nullable: true
-        numero_civico:
+        NumeroCivico:
           type: string
           nullable: true
-        cap:
+        CAP:
           type: string
           nullable: true
-        comune:
+        Comune:
           type: string
           nullable: true
-        provincia:
+        Provincia:
           type: string
           nullable: true
-        nazione:
+        Nazione:
           type: string
           default: IT
           nullable: true
@@ -2907,7 +2907,7 @@ components:
     TerzoIntermediarioOSoggettoEmittente:
       type: object
       properties:
-        dati_anagrafici:
+        DatiAnagrafici:
           $ref: '#/components/schemas/DatiAnagrafici'
       additionalProperties: false
       x-internal: true
