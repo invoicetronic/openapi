@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.13.3'
+  version: '1.13.4'
 paths:
   '/company/{id}':
     get:
@@ -1192,7 +1192,7 @@ paths:
       tags:
         - webhook
       summary: Get a webhook by id
-      description: "Retrieve a webhook by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Retrieve a webhook by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: id
           in: path
@@ -1214,7 +1214,7 @@ paths:
       tags:
         - webhook
       summary: Delete a webhook by id
-      description: "Delete a webhook subscription by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Delete a webhook subscription by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: id
           in: path
@@ -1237,7 +1237,7 @@ paths:
       tags:
         - webhook
       summary: List webhooks
-      description: "Retrieve a paginated list of webhooks. Results can be filtered by company, description, enabled status, events, and URL.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Retrieve a paginated list of webhooks. Results can be filtered by company, description, enabled status, events, and URL.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: company_id
           in: query
@@ -1295,7 +1295,7 @@ paths:
       tags:
         - webhook
       summary: Add a webhook
-      description: "Create a new webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Create a new webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       requestBody:
         content:
           application/json:
@@ -1319,7 +1319,7 @@ paths:
       tags:
         - webhook
       summary: Update a webhook
-      description: "Update an existing webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Update an existing webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       requestBody:
         content:
           application/json:
