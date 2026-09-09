@@ -10,14 +10,14 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.14.3'
+  version: '1.15.0'
 paths:
   '/company/{id}':
     get:
       tags:
         - company
       summary: Get a company by id
-      description: "Retrieve a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
+      description: "Retrieve a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
       parameters:
         - name: id
           in: path
@@ -39,7 +39,7 @@ paths:
       tags:
         - company
       summary: Delete a company
-      description: "Delete a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\n**Warning:** Deleting a company will permanently remove all associated data, including sent invoices, received invoices, invoice updates from SDI, logs, and webhooks.\n\nIf the company has any linked invoices, you must explicitly confirm deletion by adding `?force=true` to the request. Without this parameter, the API will return `409 Conflict` with details about the linked data."
+      description: "Delete a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\n\n**Warning:** Deleting a company will permanently remove all associated data, including sent invoices, received invoices, invoice updates from SDI, logs, and webhooks.\n\nIf the company has any linked invoices, you must explicitly confirm deletion by adding `?force=true` to the request. Without this parameter, the API will return `409 Conflict` with details about the linked data."
       parameters:
         - name: id
           in: path
@@ -68,7 +68,7 @@ paths:
       tags:
         - company
       summary: Get a company by vat number
-      description: "Retrieve a company by its VAT number.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
+      description: "Retrieve a company by its VAT number.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
       parameters:
         - name: vat
           in: path
@@ -89,7 +89,7 @@ paths:
       tags:
         - company
       summary: List companies
-      description: "Retrieve a paginated list of companies. Results can be filtered by free-text search (`q`) across name, VAT number, and fiscal code.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
+      description: "Retrieve a paginated list of companies. Results can be filtered by free-text search (`q`) across name, VAT number, and fiscal code.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
       parameters:
         - name: page
           in: query
@@ -130,7 +130,7 @@ paths:
       tags:
         - company
       summary: Add a company
-      description: "Add a new company.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
+      description: "Add a new company.\n\nWhen the company is already registered on the platform, the request fails with `400 Bad Request` and a problem details body whose `code` member is `company_already_registered`. Branch on `code`, not on `detail`, which is localized according to the `Accept-Language` header.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
       requestBody:
         content:
           application/json:
@@ -144,6 +144,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Company'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -154,7 +160,7 @@ paths:
       tags:
         - company
       summary: Update a company
-      description: "Update an existing company.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received."
+      description: "Update an existing company.\n\nChanging `vat` or `fiscal_code` to a value already registered on the platform fails with `400 Bad Request` and `code` = `company_already_registered`.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
       requestBody:
         content:
           application/json:
@@ -172,6 +178,12 @@ paths:
           description: Unprocessable Content
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
   /export:
@@ -393,6 +405,12 @@ paths:
                 $ref: '#/components/schemas/Receive'
         '404':
           description: Not Found
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
     delete:
       tags:
         - receive
@@ -430,6 +448,12 @@ paths:
             type: integer
             format: int32
       responses:
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '200':
           description: OK
         '404':
@@ -557,6 +581,12 @@ paths:
                   $ref: '#/components/schemas/Receive'
         '404':
           description: Not Found
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/send/{id}':
     get:
       tags:
@@ -818,6 +848,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
+        '403':
+          description: Forbidden
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           headers:
@@ -879,6 +920,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
+        '403':
+          description: Forbidden
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           headers:
@@ -947,6 +999,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
+        '403':
+          description: Forbidden
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           headers:
@@ -1007,6 +1070,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Send'
+        '403':
+          description: Forbidden
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           headers:
@@ -1039,6 +1113,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /send/validate/xml:
     post:
       tags:
@@ -1059,6 +1139,12 @@ paths:
           description: Unprocessable Content
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
   /send/validate/file:
@@ -1090,6 +1176,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /send/validate/json:
     post:
       tags:
@@ -1111,12 +1203,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /status:
     get:
       tags:
         - status
       summary: Account status
-      description: "Retrieve the number of operations (invoices + validations) and signatures left on your account.\n\nWhen `signature_left` is 0, you will receive a `403 Forbidden` response when trying to sign an invoice. Likewise, if `operation_left` is 0, you will receive a `403 Forbidden` response when storing or validating an invoice.\n\nYou can also check your account status from the [Dashboard](https://dashboard.invoicetronic.com), where you can purchase additional operations and/or signatures.\n\n**Please note** that these values are not enforced if you are on the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
+      description: "Retrieve the number of operations (invoices + validations) and signatures left on your account.\n\nWhen `signature_left` is 0, you will receive a `403 Forbidden` response when trying to sign an invoice. Likewise, if `operation_left` is 0, you will receive a `403 Forbidden` response when storing or validating an invoice.\n\nThese responses carry a problem details body whose `code` member tells them apart from other `403 Forbidden` responses: `usage_limit_exceeded` when you are out of operations, `signature_limit_exceeded` when you are out of signatures. Branch on `code`, not on `detail`, which is localized according to the `Accept-Language` header.\n\nYou can also check your account status from the [Dashboard](https://dashboard.invoicetronic.com), where you can purchase additional operations and/or signatures.\n\n**Please note** that these values are not enforced if you are on the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       responses:
         '200':
           description: OK
@@ -1373,6 +1471,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WebHook'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -1401,6 +1505,12 @@ paths:
           description: Unprocessable Content
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
   '/webhookhistory/{id}':
