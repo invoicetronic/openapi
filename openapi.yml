@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.16.3'
+  version: '1.17.0'
 paths:
   '/company/{id}':
     get:
@@ -1224,6 +1224,206 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /subkey:
+    get:
+      tags:
+        - subkey
+      summary: List restricted keys
+      description: "Retrieve a paginated list of the restricted keys of the calling main key. Secrets are never included.\n\n**Restricted keys** are API keys created under your main key, with the permissions and companies you choose. Use them to give each of your customers, integrations or collaborators only the access they need: a restricted key limited to one company sees only that company's invoices, updates, webhooks and events.\n\nOnly a main key can manage restricted keys: a restricted key calling these endpoints gets `403 Forbidden` with `code` = `subkey_not_allowed`.\n\n**Onboarding a company in two calls.** Create the company with `POST /company`, then create a restricted key limited to it with `POST /subkey` and `company_ids` = `[<company id>]`. Hand the key to your customer: it can operate only on that company.\n\n**Secrets are shown once.** `test_key` and `live_key` are returned only when a key is created or rolled, never by reads. Store them safely. If a secret is lost or exposed, roll the key with `POST /subkey/{id}/roll`: its id, permissions, companies and CORS origins stay the same. Pass `expires_in_hours` (up to 168) to keep the replaced secrets working while you migrate; without it they stop working at once.\n\n**Permissions** are set per resource. `company`, `send`, `receive` and `webhook` accept `Read` or `Write`; `update`, `log`, `webhookhistory`, `export` and `status` accept only `Read`. A missing resource means no access. Each permission cannot exceed the one of your main key (`400`, `code` = `permission_exceeds_parent`). On creation, omitted or empty `permissions` copy those of your main key at that moment.\n\n| Resource | `Read` | `Write` |\n|---|---|---|\n| `company` | list and read companies | also create, update and delete them |\n| `send` | list and read outgoing invoices | also send and validate invoices |\n| `receive` | list and read incoming invoices | also delete them |\n| `webhook` | list and read webhooks | also create, update and delete them |\n| `update`, `log`, `webhookhistory`, `export`, `status` | read | — |\n\n**Companies.** Omitted or empty `company_ids` give access to all the companies of your account, including the ones created later. Every id must belong to your account (`400`, `code` = `company_not_found`). A restricted key limited to some companies cannot see the companies it creates: use your main key for onboarding.\n\n**Limits.** An account can hold up to 1,000 restricted keys (`400`, `code` = `subkey_limit_reached`). Operations performed with restricted keys use the credits of your account.\n"
+      parameters:
+        - name: page
+          in: query
+          description: Page number.
+          schema:
+            type: integer
+            format: int32
+            default: 1
+        - name: page_size
+          in: query
+          description: Items per page. Cannot be greater than 200.
+          schema:
+            type: integer
+            format: int32
+            default: 100
+        - name: company_id
+          in: query
+          description: Company id
+          schema:
+            type: integer
+            format: int32
+        - name: active
+          in: query
+          description: Active keys only (true) or inactive only (false).
+          schema:
+            type: boolean
+        - name: q
+          in: query
+          description: 'Human-readable label: free-text search.'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubKey'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    post:
+      tags:
+        - subkey
+      summary: Add a restricted key
+      description: "Create a restricted key under the calling main key. The response is the only one carrying `test_key` and `live_key`, together with the one of a roll: store them safely.\n\n**Restricted keys** are API keys created under your main key, with the permissions and companies you choose. Use them to give each of your customers, integrations or collaborators only the access they need: a restricted key limited to one company sees only that company's invoices, updates, webhooks and events.\n\nOnly a main key can manage restricted keys: a restricted key calling these endpoints gets `403 Forbidden` with `code` = `subkey_not_allowed`.\n\n**Onboarding a company in two calls.** Create the company with `POST /company`, then create a restricted key limited to it with `POST /subkey` and `company_ids` = `[<company id>]`. Hand the key to your customer: it can operate only on that company.\n\n**Secrets are shown once.** `test_key` and `live_key` are returned only when a key is created or rolled, never by reads. Store them safely. If a secret is lost or exposed, roll the key with `POST /subkey/{id}/roll`: its id, permissions, companies and CORS origins stay the same. Pass `expires_in_hours` (up to 168) to keep the replaced secrets working while you migrate; without it they stop working at once.\n\n**Permissions** are set per resource. `company`, `send`, `receive` and `webhook` accept `Read` or `Write`; `update`, `log`, `webhookhistory`, `export` and `status` accept only `Read`. A missing resource means no access. Each permission cannot exceed the one of your main key (`400`, `code` = `permission_exceeds_parent`). On creation, omitted or empty `permissions` copy those of your main key at that moment.\n\n| Resource | `Read` | `Write` |\n|---|---|---|\n| `company` | list and read companies | also create, update and delete them |\n| `send` | list and read outgoing invoices | also send and validate invoices |\n| `receive` | list and read incoming invoices | also delete them |\n| `webhook` | list and read webhooks | also create, update and delete them |\n| `update`, `log`, `webhookhistory`, `export`, `status` | read | — |\n\n**Companies.** Omitted or empty `company_ids` give access to all the companies of your account, including the ones created later. Every id must belong to your account (`400`, `code` = `company_not_found`). A restricted key limited to some companies cannot see the companies it creates: use your main key for onboarding.\n\n**Limits.** An account can hold up to 1,000 restricted keys (`400`, `code` = `subkey_limit_reached`). Operations performed with restricted keys use the credits of your account.\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubKeyRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubKeyWithSecrets'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    put:
+      tags:
+        - subkey
+      summary: Update a restricted key
+      description: "Replace the description, active flag, permissions, companies and CORS origins of a restricted key. Omitted `permissions`, `company_ids` or `cors_origins` mean none. A stale `version` fails with `422`.\n\n**Restricted keys** are API keys created under your main key, with the permissions and companies you choose. Use them to give each of your customers, integrations or collaborators only the access they need: a restricted key limited to one company sees only that company's invoices, updates, webhooks and events.\n\nOnly a main key can manage restricted keys: a restricted key calling these endpoints gets `403 Forbidden` with `code` = `subkey_not_allowed`.\n\n**Onboarding a company in two calls.** Create the company with `POST /company`, then create a restricted key limited to it with `POST /subkey` and `company_ids` = `[<company id>]`. Hand the key to your customer: it can operate only on that company.\n\n**Secrets are shown once.** `test_key` and `live_key` are returned only when a key is created or rolled, never by reads. Store them safely. If a secret is lost or exposed, roll the key with `POST /subkey/{id}/roll`: its id, permissions, companies and CORS origins stay the same. Pass `expires_in_hours` (up to 168) to keep the replaced secrets working while you migrate; without it they stop working at once.\n\n**Permissions** are set per resource. `company`, `send`, `receive` and `webhook` accept `Read` or `Write`; `update`, `log`, `webhookhistory`, `export` and `status` accept only `Read`. A missing resource means no access. Each permission cannot exceed the one of your main key (`400`, `code` = `permission_exceeds_parent`). On creation, omitted or empty `permissions` copy those of your main key at that moment.\n\n| Resource | `Read` | `Write` |\n|---|---|---|\n| `company` | list and read companies | also create, update and delete them |\n| `send` | list and read outgoing invoices | also send and validate invoices |\n| `receive` | list and read incoming invoices | also delete them |\n| `webhook` | list and read webhooks | also create, update and delete them |\n| `update`, `log`, `webhookhistory`, `export`, `status` | read | — |\n\n**Companies.** Omitted or empty `company_ids` give access to all the companies of your account, including the ones created later. Every id must belong to your account (`400`, `code` = `company_not_found`). A restricted key limited to some companies cannot see the companies it creates: use your main key for onboarding.\n\n**Limits.** An account can hold up to 1,000 restricted keys (`400`, `code` = `subkey_limit_reached`). Operations performed with restricted keys use the credits of your account.\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubKeyUpdate'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubKey'
+        '404':
+          description: Not Found
+        '422':
+          description: Unprocessable Content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/subkey/{id}':
+    get:
+      tags:
+        - subkey
+      summary: Get a restricted key by id
+      description: "Retrieve a restricted key of the calling main key. Secrets are never included.\n\n**Restricted keys** are API keys created under your main key, with the permissions and companies you choose. Use them to give each of your customers, integrations or collaborators only the access they need: a restricted key limited to one company sees only that company's invoices, updates, webhooks and events.\n\nOnly a main key can manage restricted keys: a restricted key calling these endpoints gets `403 Forbidden` with `code` = `subkey_not_allowed`.\n\n**Onboarding a company in two calls.** Create the company with `POST /company`, then create a restricted key limited to it with `POST /subkey` and `company_ids` = `[<company id>]`. Hand the key to your customer: it can operate only on that company.\n\n**Secrets are shown once.** `test_key` and `live_key` are returned only when a key is created or rolled, never by reads. Store them safely. If a secret is lost or exposed, roll the key with `POST /subkey/{id}/roll`: its id, permissions, companies and CORS origins stay the same. Pass `expires_in_hours` (up to 168) to keep the replaced secrets working while you migrate; without it they stop working at once.\n\n**Permissions** are set per resource. `company`, `send`, `receive` and `webhook` accept `Read` or `Write`; `update`, `log`, `webhookhistory`, `export` and `status` accept only `Read`. A missing resource means no access. Each permission cannot exceed the one of your main key (`400`, `code` = `permission_exceeds_parent`). On creation, omitted or empty `permissions` copy those of your main key at that moment.\n\n| Resource | `Read` | `Write` |\n|---|---|---|\n| `company` | list and read companies | also create, update and delete them |\n| `send` | list and read outgoing invoices | also send and validate invoices |\n| `receive` | list and read incoming invoices | also delete them |\n| `webhook` | list and read webhooks | also create, update and delete them |\n| `update`, `log`, `webhookhistory`, `export`, `status` | read | — |\n\n**Companies.** Omitted or empty `company_ids` give access to all the companies of your account, including the ones created later. Every id must belong to your account (`400`, `code` = `company_not_found`). A restricted key limited to some companies cannot see the companies it creates: use your main key for onboarding.\n\n**Limits.** An account can hold up to 1,000 restricted keys (`400`, `code` = `subkey_limit_reached`). Operations performed with restricted keys use the credits of your account.\n"
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubKey'
+        '404':
+          description: Not Found
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+    delete:
+      tags:
+        - subkey
+      summary: Delete a restricted key
+      description: "Delete a restricted key of the calling main key. It stops authenticating at once.\n\n**Restricted keys** are API keys created under your main key, with the permissions and companies you choose. Use them to give each of your customers, integrations or collaborators only the access they need: a restricted key limited to one company sees only that company's invoices, updates, webhooks and events.\n\nOnly a main key can manage restricted keys: a restricted key calling these endpoints gets `403 Forbidden` with `code` = `subkey_not_allowed`.\n\n**Onboarding a company in two calls.** Create the company with `POST /company`, then create a restricted key limited to it with `POST /subkey` and `company_ids` = `[<company id>]`. Hand the key to your customer: it can operate only on that company.\n\n**Secrets are shown once.** `test_key` and `live_key` are returned only when a key is created or rolled, never by reads. Store them safely. If a secret is lost or exposed, roll the key with `POST /subkey/{id}/roll`: its id, permissions, companies and CORS origins stay the same. Pass `expires_in_hours` (up to 168) to keep the replaced secrets working while you migrate; without it they stop working at once.\n\n**Permissions** are set per resource. `company`, `send`, `receive` and `webhook` accept `Read` or `Write`; `update`, `log`, `webhookhistory`, `export` and `status` accept only `Read`. A missing resource means no access. Each permission cannot exceed the one of your main key (`400`, `code` = `permission_exceeds_parent`). On creation, omitted or empty `permissions` copy those of your main key at that moment.\n\n| Resource | `Read` | `Write` |\n|---|---|---|\n| `company` | list and read companies | also create, update and delete them |\n| `send` | list and read outgoing invoices | also send and validate invoices |\n| `receive` | list and read incoming invoices | also delete them |\n| `webhook` | list and read webhooks | also create, update and delete them |\n| `update`, `log`, `webhookhistory`, `export`, `status` | read | — |\n\n**Companies.** Omitted or empty `company_ids` give access to all the companies of your account, including the ones created later. Every id must belong to your account (`400`, `code` = `company_not_found`). A restricted key limited to some companies cannot see the companies it creates: use your main key for onboarding.\n\n**Limits.** An account can hold up to 1,000 restricted keys (`400`, `code` = `subkey_limit_reached`). Operations performed with restricted keys use the credits of your account.\n"
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubKey'
+        '404':
+          description: Not Found
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+  '/subkey/{id}/roll':
+    post:
+      tags:
+        - subkey
+      summary: Roll the secrets of a restricted key
+      description: "Generate new `test_key` and `live_key` for a restricted key, keeping its id, permissions, companies and CORS origins. The replaced secrets stop working at once, or after `expires_in_hours` to migrate without downtime. The response carries the new secrets: store them safely.\n\n**Restricted keys** are API keys created under your main key, with the permissions and companies you choose. Use them to give each of your customers, integrations or collaborators only the access they need: a restricted key limited to one company sees only that company's invoices, updates, webhooks and events.\n\nOnly a main key can manage restricted keys: a restricted key calling these endpoints gets `403 Forbidden` with `code` = `subkey_not_allowed`.\n\n**Onboarding a company in two calls.** Create the company with `POST /company`, then create a restricted key limited to it with `POST /subkey` and `company_ids` = `[<company id>]`. Hand the key to your customer: it can operate only on that company.\n\n**Secrets are shown once.** `test_key` and `live_key` are returned only when a key is created or rolled, never by reads. Store them safely. If a secret is lost or exposed, roll the key with `POST /subkey/{id}/roll`: its id, permissions, companies and CORS origins stay the same. Pass `expires_in_hours` (up to 168) to keep the replaced secrets working while you migrate; without it they stop working at once.\n\n**Permissions** are set per resource. `company`, `send`, `receive` and `webhook` accept `Read` or `Write`; `update`, `log`, `webhookhistory`, `export` and `status` accept only `Read`. A missing resource means no access. Each permission cannot exceed the one of your main key (`400`, `code` = `permission_exceeds_parent`). On creation, omitted or empty `permissions` copy those of your main key at that moment.\n\n| Resource | `Read` | `Write` |\n|---|---|---|\n| `company` | list and read companies | also create, update and delete them |\n| `send` | list and read outgoing invoices | also send and validate invoices |\n| `receive` | list and read incoming invoices | also delete them |\n| `webhook` | list and read webhooks | also create, update and delete them |\n| `update`, `log`, `webhookhistory`, `export`, `status` | read | — |\n\n**Companies.** Omitted or empty `company_ids` give access to all the companies of your account, including the ones created later. Every id must belong to your account (`400`, `code` = `company_not_found`). A restricted key limited to some companies cannot see the companies it creates: use your main key for onboarding.\n\n**Limits.** An account can hold up to 1,000 restricted keys (`400`, `code` = `subkey_limit_reached`). Operations performed with restricted keys use the credits of your account.\n"
+      parameters:
+        - name: id
+          in: path
+          description: Item id
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: expires_in_hours
+          in: query
+          description: 'Hours the replaced secrets keep working, from 1 to 168. When omitted, they stop working at once.'
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubKeyWithSecrets'
+        '404':
+          description: Not Found
+        '403':
+          description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/update/{id}':
     get:
       tags:
@@ -2673,6 +2873,69 @@ components:
           nullable: true
       additionalProperties: false
       x-internal: true
+    Permissions:
+      type: object
+      properties:
+        company:
+          enum:
+            - Read
+            - Write
+          type: string
+          description: 'Companies: `Read` lists and reads them, `Write` also creates, updates and deletes them.'
+          nullable: true
+        send:
+          enum:
+            - Read
+            - Write
+          type: string
+          description: 'Outgoing invoices: `Read` lists and reads them, `Write` also sends and validates invoices.'
+          nullable: true
+        receive:
+          enum:
+            - Read
+            - Write
+          type: string
+          description: 'Incoming invoices: `Read` lists and reads them, `Write` also deletes them.'
+          nullable: true
+        webhook:
+          enum:
+            - Read
+            - Write
+          type: string
+          description: 'Webhooks: `Read` lists and reads them, `Write` also creates, updates and deletes them.'
+          nullable: true
+        update:
+          enum:
+            - Read
+          type: string
+          description: SDI status updates of outgoing invoices.
+          nullable: true
+        log:
+          enum:
+            - Read
+          type: string
+          description: Event log.
+          nullable: true
+        webhookhistory:
+          enum:
+            - Read
+          type: string
+          description: Webhook delivery history.
+          nullable: true
+        export:
+          enum:
+            - Read
+          type: string
+          description: Invoice export.
+          nullable: true
+        status:
+          enum:
+            - Read
+          type: string
+          description: Account status (remaining operations and signatures).
+          nullable: true
+      additionalProperties: false
+      description: "Permissions of a restricted key, per resource. A missing property means no access to that resource. Each\npermission cannot exceed the one of the main key the restricted key belongs to."
     ProblemDetails:
       type: object
       properties:
@@ -3084,6 +3347,174 @@ components:
           description: Whether the current API key is a sub-key (restricted key).
       additionalProperties: false
       description: Account status with remaining operations and signatures.
+    SubKey:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier.
+          format: int32
+        created:
+          type: string
+          description: Creation date.
+          format: date-time
+          readOnly: true
+        version:
+          type: integer
+          description: 'Row version, for optimistic concurrency.'
+          format: int32
+          readOnly: true
+        description:
+          type: string
+          description: Human-readable label.
+          nullable: true
+        active:
+          type: boolean
+          description: Whether the key can authenticate.
+        permissions:
+          $ref: '#/components/schemas/Permissions'
+        company_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: Companies the key can access. Empty means all the companies of the account.
+          nullable: true
+        cors_origins:
+          type: array
+          items:
+            type: string
+          description: Browser origins allowed to call the API with this key (CORS).
+          nullable: true
+        previous_key_expires_at:
+          type: string
+          description: When the secrets replaced by the last roll stop working; null when there are none still valid.
+          format: date-time
+          nullable: true
+      additionalProperties: false
+      description: A restricted key. Its secrets are returned only when the key is created or rolled.
+    SubKeyRequest:
+      required:
+        - description
+      type: object
+      properties:
+        description:
+          minLength: 1
+          type: string
+          description: 'Human-readable label, e.g. the name of the tenant the key is for.'
+          example: Studio Rossi Srl
+        active:
+          type: boolean
+          description: Whether the key can authenticate. Defaults to true.
+        permissions:
+          $ref: '#/components/schemas/Permissions'
+        company_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: "Companies the key can access. When omitted or empty, the key can access all the companies of the account,\nincluding the ones created later."
+          nullable: true
+        cors_origins:
+          type: array
+          items:
+            type: string
+          description: "Browser origins allowed to call the API with this key (CORS), e.g. `https://app.example.com` or\n`*.example.com`. A key used from a browser is public: keep its permissions and companies minimal."
+          nullable: true
+      additionalProperties: false
+      description: A restricted key to create.
+    SubKeyUpdate:
+      required:
+        - description
+      type: object
+      properties:
+        description:
+          minLength: 1
+          type: string
+          description: 'Human-readable label, e.g. the name of the tenant the key is for.'
+          example: Studio Rossi Srl
+        active:
+          type: boolean
+          description: Whether the key can authenticate. Defaults to true.
+        permissions:
+          $ref: '#/components/schemas/Permissions'
+        company_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: "Companies the key can access. When omitted or empty, the key can access all the companies of the account,\nincluding the ones created later."
+          nullable: true
+        cors_origins:
+          type: array
+          items:
+            type: string
+          description: "Browser origins allowed to call the API with this key (CORS), e.g. `https://app.example.com` or\n`*.example.com`. A key used from a browser is public: keep its permissions and companies minimal."
+          nullable: true
+        id:
+          type: integer
+          description: Id of the restricted key to update.
+          format: int32
+        version:
+          type: integer
+          description: 'Row version read with the key, for optimistic concurrency: a stale version fails with 422.'
+          format: int32
+      additionalProperties: false
+      description: "A restricted key to update. All the editable fields are replaced: an omitted `permissions`,\n`company_ids` or `cors_origins` means none."
+    SubKeyWithSecrets:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier.
+          format: int32
+        created:
+          type: string
+          description: Creation date.
+          format: date-time
+          readOnly: true
+        version:
+          type: integer
+          description: 'Row version, for optimistic concurrency.'
+          format: int32
+          readOnly: true
+        description:
+          type: string
+          description: Human-readable label.
+          nullable: true
+        active:
+          type: boolean
+          description: Whether the key can authenticate.
+        permissions:
+          $ref: '#/components/schemas/Permissions'
+        company_ids:
+          type: array
+          items:
+            type: integer
+            format: int32
+          description: Companies the key can access. Empty means all the companies of the account.
+          nullable: true
+        cors_origins:
+          type: array
+          items:
+            type: string
+          description: Browser origins allowed to call the API with this key (CORS).
+          nullable: true
+        previous_key_expires_at:
+          type: string
+          description: When the secrets replaced by the last roll stop working; null when there are none still valid.
+          format: date-time
+          nullable: true
+        test_key:
+          type: string
+          description: Sandbox secret.
+          nullable: true
+        live_key:
+          type: string
+          description: Production secret.
+          nullable: true
+      additionalProperties: false
+      description: "A restricted key with its secrets, returned only when the key is created or rolled. Store them safely: they\ncannot be read again."
     TerzoIntermediarioOSoggettoEmittente:
       type: object
       properties:
@@ -3297,5 +3728,6 @@ tags:
   - name: receive
   - name: send
   - name: status
+  - name: subkey
   - name: update
   - name: webhook
