@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.17.4'
+  version: '1.17.5'
 paths:
   '/company/{id}':
     get:
@@ -806,7 +806,7 @@ paths:
       tags:
         - send
       summary: Add an invoice
-      description: "Add a new invoice using a structured Send object. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection."
+      description: "Add a new invoice using a structured Send object. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection.\n\n### Signature service unavailable\n\nWhen the invoice has to be signed (see the `signature` parameter) and the digital signature service is temporarily unavailable, the request fails with `503 Service Unavailable` and `code` set to `signature_unavailable`. The invoice is **not** saved: retry after the delay suggested by the `Retry-After` header. A retry with the same `Idempotency-Key` is processed again, not replayed.\n"
       parameters:
         - name: validate
           in: query
@@ -872,12 +872,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '503':
+          description: Service Unavailable
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /send/xml:
     post:
       tags:
         - send
       summary: Add an invoice by xml
-      description: "Add a new invoice using a raw XML document in FatturaPA format. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection."
+      description: "Add a new invoice using a raw XML document in FatturaPA format. The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection.\n\n### Signature service unavailable\n\nWhen the invoice has to be signed (see the `signature` parameter) and the digital signature service is temporarily unavailable, the request fails with `503 Service Unavailable` and `code` set to `signature_unavailable`. The invoice is **not** saved: retry after the delay suggested by the `Retry-After` header. A retry with the same `Idempotency-Key` is processed again, not replayed.\n"
       parameters:
         - name: validate
           in: query
@@ -944,12 +955,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '503':
+          description: Service Unavailable
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /send/file:
     post:
       tags:
         - send
       summary: Add an invoice by file
-      description: "Add a new invoice by uploading a file. Supported formats are XML (FatturaPA) and P7M (signed). The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection."
+      description: "Add a new invoice by uploading a file. Supported formats are XML (FatturaPA) and P7M (signed). The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection.\n\n### Signature service unavailable\n\nWhen the invoice has to be signed (see the `signature` parameter) and the digital signature service is temporarily unavailable, the request fails with `503 Service Unavailable` and `code` set to `signature_unavailable`. The invoice is **not** saved: retry after the delay suggested by the `Retry-After` header. A retry with the same `Idempotency-Key` is processed again, not replayed.\n"
       parameters:
         - name: validate
           in: query
@@ -1023,12 +1045,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '503':
+          description: Service Unavailable
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /send/json:
     post:
       tags:
         - send
       summary: Add an invoice by json
-      description: "Add a new invoice using a FatturaPA JSON representation. Property names mirror the FatturaPA XML schema (PascalCase, e.g. `FatturaElettronicaHeader`). The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection."
+      description: "Add a new invoice using a FatturaPA JSON representation. Property names mirror the FatturaPA XML schema (PascalCase, e.g. `FatturaElettronicaHeader`). The invoice will be signed (if requested), validated (if requested), and queued for delivery to SDI. Status updates from SDI will be available in the `update` endpoint.\n\n**Send** invoices are outbound sales invoices transmitted to customers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 15 days in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nYou can also upload invoices via the [Dashboard](https://dashboard.invoicetronic.com).\n\n### Idempotency\n\nTo protect against duplicate submissions caused by network retries, you can send an optional `Idempotency-Key` header with any unique, client-generated value (up to 255 characters).\n\n- The first request with a given key is processed normally, and its response (status, body and `Location`) is stored for 24 hours.\n- Any subsequent request that reuses the same key within that window replays the original response instead of sending a second invoice to SDI. A replayed response carries the `Idempotent-Replayed: true` header, so you can tell it apart from a freshly processed one.\n- If a request with the same key is still being processed, the retry receives `409 Conflict`.\n- If the same key is reused with a **different** invoice payload, the request is rejected with `422 Unprocessable Entity`: a given key must always map to the same request.\n\nKeys are scoped per account, so different accounts can use the same key value without interfering. If the idempotency store is temporarily unavailable, the request is processed normally without idempotency protection.\n\n### Signature service unavailable\n\nWhen the invoice has to be signed (see the `signature` parameter) and the digital signature service is temporarily unavailable, the request fails with `503 Service Unavailable` and `code` set to `signature_unavailable`. The invoice is **not** saved: retry after the delay suggested by the `Retry-After` header. A retry with the same `Idempotency-Key` is processed again, not replayed.\n"
       parameters:
         - name: validate
           in: query
@@ -1092,6 +1125,17 @@ paths:
                 type: boolean
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '503':
+          description: Service Unavailable
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
   /send/validate:
