@@ -10,14 +10,14 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.18.0'
+  version: '1.19.0'
 paths:
   '/company/{id}':
     get:
       tags:
         - company
       summary: Get a company by id
-      description: "Retrieve a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
+      description: "Retrieve a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number, or by fiscal code when the invoice has none, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\nEntities that only have a fiscal code, such as non-profit associations and parishes, are registered with `fiscal_code` alone and no `vat`. When `fiscal_code` is omitted it is derived from `vat`.\n"
       parameters:
         - name: id
           in: path
@@ -39,7 +39,7 @@ paths:
       tags:
         - company
       summary: Delete a company
-      description: "Delete a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\n\n**Warning:** Deleting a company will permanently remove all associated data, including sent invoices, received invoices, invoice updates from SDI, logs, and webhooks.\n\nIf the company has any linked invoices, you must explicitly confirm deletion by adding `?force=true` to the request. Without this parameter, the API will return `409 Conflict` with details about the linked data."
+      description: "Delete a company by its internal id.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number, or by fiscal code when the invoice has none, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\nEntities that only have a fiscal code, such as non-profit associations and parishes, are registered with `fiscal_code` alone and no `vat`. When `fiscal_code` is omitted it is derived from `vat`.\n\n\n**Warning:** Deleting a company will permanently remove all associated data, including sent invoices, received invoices, invoice updates from SDI, logs, and webhooks.\n\nIf the company has any linked invoices, you must explicitly confirm deletion by adding `?force=true` to the request. Without this parameter, the API will return `409 Conflict` with details about the linked data."
       parameters:
         - name: id
           in: path
@@ -61,6 +61,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Company'
+        '422':
+          description: Unprocessable Content
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '409':
+          description: Conflict
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: Not Found
   '/company/{vat}':
@@ -68,7 +86,7 @@ paths:
       tags:
         - company
       summary: Get a company by vat number
-      description: "Retrieve a company by its VAT number.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
+      description: "Retrieve a company by its VAT number.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number, or by fiscal code when the invoice has none, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\nEntities that only have a fiscal code, such as non-profit associations and parishes, are registered with `fiscal_code` alone and no `vat`. When `fiscal_code` is omitted it is derived from `vat`.\n"
       parameters:
         - name: vat
           in: path
@@ -84,12 +102,18 @@ paths:
                 $ref: '#/components/schemas/Company'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   /company:
     get:
       tags:
         - company
       summary: List companies
-      description: "Retrieve a paginated list of companies. Results can be filtered by free-text search (`q`) across name, VAT number, and fiscal code.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
+      description: "Retrieve a paginated list of companies. Results can be filtered by free-text search (`q`) across name, VAT number, and fiscal code.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number, or by fiscal code when the invoice has none, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\nEntities that only have a fiscal code, such as non-profit associations and parishes, are registered with `fiscal_code` alone and no `vat`. When `fiscal_code` is omitted it is derived from `vat`.\n"
       parameters:
         - name: page
           in: query
@@ -126,11 +150,17 @@ paths:
                   $ref: '#/components/schemas/Company'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
     post:
       tags:
         - company
       summary: Add a company
-      description: "Add a new company.\n\nWhen the company is already registered on the platform, the request fails with `400 Bad Request` and a problem details body whose `code` member is `company_already_registered`. Branch on `code`, not on `detail`, which is localized according to the `Accept-Language` header.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
+      description: "Add a new company.\n\nWhen the company is already registered on the platform, the request fails with `400 Bad Request` and a problem details body whose `code` member is `company_already_registered`. Branch on `code`, not on `detail`, which is localized according to the `Accept-Language` header.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number, or by fiscal code when the invoice has none, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\nEntities that only have a fiscal code, such as non-profit associations and parishes, are registered with `fiscal_code` alone and no `vat`. When `fiscal_code` is omitted it is derived from `vat`.\n"
       requestBody:
         content:
           application/json:
@@ -150,6 +180,12 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -160,7 +196,7 @@ paths:
       tags:
         - company
       summary: Update a company
-      description: "Update an existing company.\n\nChanging `vat` or `fiscal_code` to a value already registered on the platform fails with `400 Bad Request` and `code` = `company_already_registered`.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number alone, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n"
+      description: "Update an existing company.\n\nChanging `vat` or `fiscal_code` to a value already registered on the platform fails with `400 Bad Request` and `code` = `company_already_registered`.\n\n**Companies** are the entities that send and receive invoices. They are automatically created from invoice data when invoices are sent or received.\n\nA company's `vat` and `fiscal_code` are unique platform-wide, not just within your account: incoming invoices are routed to their owner by VAT number, or by fiscal code when the invoice has none, so a company belongs to one account at a time. Registering a company that is already active under another account is therefore not possible, and that account is not disclosed to you. Moving a company to your account is a transfer: contact support with the company's written authorization.\n\nEntities that only have a fiscal code, such as non-profit associations and parishes, are registered with `fiscal_code` alone and no `vat`. When `fiscal_code` is omitted it is derived from `vat`.\n"
       requestBody:
         content:
           application/json:
@@ -178,6 +214,12 @@ paths:
           description: Unprocessable Content
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
         '404':
@@ -378,12 +420,18 @@ paths:
                   $ref: '#/components/schemas/Event'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/receive/{id}':
     get:
       tags:
         - receive
       summary: Get an incoming invoice by id
-      description: "Retrieve an incoming invoice by its internal id. The `id` is unique and assigned by the system when the invoice is received. Returns invoice metadata; set `include_payload` to true to include the full invoice content. The invoice is marked as read (`is_read` = true) only when `include_payload` is true.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nInbound invoices are routed to your account via the recipient VAT number, so the recipient company must exist in Invoicetronic for the invoice to be matched. If an invoice arrives before its company has been registered, it is held by our SDI infrastructure and automatically re-processed once the company is created—no invoice is lost. See [Prerequisites](https://invoicetronic.com/en/docs/prerequisites/) for the recommended setup order."
+      description: "Retrieve an incoming invoice by its internal id. The `id` is unique and assigned by the system when the invoice is received. Returns invoice metadata; set `include_payload` to true to include the full invoice content. The invoice is marked as read (`is_read` = true) only when `include_payload` is true.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nInbound invoices are routed to your account via the recipient VAT number, or its fiscal code when the invoice has no VAT number, so the recipient company must exist in Invoicetronic for the invoice to be matched. If an invoice arrives before its company has been registered, it is held by our SDI infrastructure and automatically re-processed once the company is created—no invoice is lost. See [Prerequisites](https://invoicetronic.com/en/docs/prerequisites/) for the recommended setup order."
       parameters:
         - name: id
           in: path
@@ -417,7 +465,7 @@ paths:
       tags:
         - receive
       summary: Delete an incoming invoice by id
-      description: "Permanently delete a receive invoice by its internal id. This action cannot be undone.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nInbound invoices are routed to your account via the recipient VAT number, so the recipient company must exist in Invoicetronic for the invoice to be matched. If an invoice arrives before its company has been registered, it is held by our SDI infrastructure and automatically re-processed once the company is created—no invoice is lost. See [Prerequisites](https://invoicetronic.com/en/docs/prerequisites/) for the recommended setup order."
+      description: "Permanently delete a receive invoice by its internal id. This action cannot be undone.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nInbound invoices are routed to your account via the recipient VAT number, or its fiscal code when the invoice has no VAT number, so the recipient company must exist in Invoicetronic for the invoice to be matched. If an invoice arrives before its company has been registered, it is held by our SDI infrastructure and automatically re-processed once the company is created—no invoice is lost. See [Prerequisites](https://invoicetronic.com/en/docs/prerequisites/) for the recommended setup order."
       parameters:
         - name: id
           in: path
@@ -433,6 +481,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Receive'
+        '422':
+          description: Unprocessable Content
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '409':
+          description: Conflict
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: Not Found
   '/receive/{id}/payload':
@@ -469,7 +535,7 @@ paths:
       tags:
         - receive
       summary: List incoming invoices
-      description: "Retrieve a paginated list of receive invoices. Results can be filtered by various criteria such as company, date ranges, sender, document number, and free-text search (`q`). Returns invoice metadata; set `include_payload` to true to include the full invoice content. Invoices are marked as read (`is_read` = true) only when `include_payload` is true.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nInbound invoices are routed to your account via the recipient VAT number, so the recipient company must exist in Invoicetronic for the invoice to be matched. If an invoice arrives before its company has been registered, it is held by our SDI infrastructure and automatically re-processed once the company is created—no invoice is lost. See [Prerequisites](https://invoicetronic.com/en/docs/prerequisites/) for the recommended setup order."
+      description: "Retrieve a paginated list of receive invoices. Results can be filtered by various criteria such as company, date ranges, sender, document number, and free-text search (`q`). Returns invoice metadata; set `include_payload` to true to include the full invoice content. Invoices are marked as read (`is_read` = true) only when `include_payload` is true.\n\n**Receive** invoices are inbound purchase invoices received from suppliers through Italy's SDI (Sistema di Interscambio). Preserved for two years in the live environment and 24 hours in the [Sandbox](https://invoicetronic.com/en/docs/sandbox/).\n\nInbound invoices are routed to your account via the recipient VAT number, or its fiscal code when the invoice has no VAT number, so the recipient company must exist in Invoicetronic for the invoice to be matched. If an invoice arrives before its company has been registered, it is held by our SDI infrastructure and automatically re-processed once the company is created—no invoice is lost. See [Prerequisites](https://invoicetronic.com/en/docs/prerequisites/) for the recommended setup order."
       parameters:
         - name: company_id
           in: query
@@ -583,6 +649,12 @@ paths:
                   $ref: '#/components/schemas/Receive'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '403':
           description: Forbidden
           content:
@@ -645,6 +717,12 @@ paths:
                 $ref: '#/components/schemas/Send'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/send/{id}/payload':
     get:
       tags:
@@ -802,6 +880,12 @@ paths:
                   $ref: '#/components/schemas/Send'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
     post:
       tags:
         - send
@@ -852,6 +936,17 @@ paths:
                 $ref: '#/components/schemas/Send'
         '403':
           description: Forbidden
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
           headers:
             Idempotent-Replayed:
               description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
@@ -935,6 +1030,17 @@ paths:
                 $ref: '#/components/schemas/Send'
         '403':
           description: Forbidden
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
           headers:
             Idempotent-Replayed:
               description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
@@ -1034,6 +1140,17 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           headers:
@@ -1116,6 +1233,17 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          headers:
+            Idempotent-Replayed:
+              description: Present and set to `true` only when the response was replayed from a previous request with the same `Idempotency-Key`; absent otherwise.
+              schema:
+                type: boolean
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           headers:
@@ -1153,6 +1281,12 @@ paths:
       responses:
         '204':
           description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -1181,6 +1315,12 @@ paths:
       responses:
         '204':
           description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -1216,6 +1356,12 @@ paths:
       responses:
         '204':
           description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -1243,6 +1389,12 @@ paths:
       responses:
         '204':
           description: No Content
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -1314,6 +1466,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/SubKey'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '403':
           description: Forbidden
           content:
@@ -1338,6 +1496,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SubKeyWithSecrets'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '403':
           description: Forbidden
           content:
@@ -1364,6 +1528,12 @@ paths:
                 $ref: '#/components/schemas/SubKey'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '422':
           description: Unprocessable Content
           content:
@@ -1462,6 +1632,12 @@ paths:
                 $ref: '#/components/schemas/SubKeyWithSecrets'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '403':
           description: Forbidden
           content:
@@ -1595,6 +1771,12 @@ paths:
                   $ref: '#/components/schemas/Update'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
   '/webhook/{id}':
     get:
       tags:
@@ -1638,6 +1820,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WebHook'
+        '422':
+          description: Unprocessable Content
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '409':
+          description: Conflict
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
         '404':
           description: Not Found
   /webhook:
@@ -1699,6 +1899,12 @@ paths:
                   $ref: '#/components/schemas/WebHook'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
     post:
       tags:
         - webhook
@@ -1719,6 +1925,12 @@ paths:
                 $ref: '#/components/schemas/WebHook'
         '403':
           description: Forbidden
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
           content:
             application/problem+json:
               schema:
@@ -1751,6 +1963,12 @@ paths:
           description: Unprocessable Content
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetails'
         '404':
@@ -1827,6 +2045,12 @@ paths:
                   $ref: '#/components/schemas/WebHookHistory'
         '404':
           description: Not Found
+        '400':
+          description: Bad Request
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
 components:
   schemas:
     Allegati:
@@ -1933,9 +2157,7 @@ components:
       x-internal: true
     Company:
       required:
-        - fiscal_code
         - name
-        - vat
       type: object
       properties:
         id:
@@ -1959,14 +2181,14 @@ components:
           format: int32
           readOnly: true
         vat:
-          minLength: 1
           type: string
-          description: Vat number. Must include the country code.
+          description: "Vat number. Must include the country code. Required when fiscal_code is missing; omit it for entities\nthat only have a fiscal code, such as non-profit organizations."
+          nullable: true
           example: IT01234567891
         fiscal_code:
-          minLength: 1
           type: string
-          description: Fiscal code. In most cases it's the same as the vat number.
+          description: 'Fiscal code. In most cases it''s the same as the vat number. When missing, it is derived from the vat number.'
+          nullable: true
           example: RSSMRA70A01F205V
         name:
           minLength: 1
