@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.20.0'
+  version: '1.20.1'
 paths:
   '/company/{id}':
     get:
@@ -1412,7 +1412,7 @@ paths:
       tags:
         - status
       summary: Account status
-      description: "Retrieve the number of operations (invoices + validations) and signatures left on your account.\n\nWhen `signature_left` is 0, you will receive a `403 Forbidden` response when trying to sign an invoice. Likewise, if `operation_left` is 0, you will receive a `403 Forbidden` response when storing or validating an invoice.\n\nThese responses carry a problem details body whose `code` member tells them apart from other `403 Forbidden` responses: `usage_limit_exceeded` when you are out of operations, `signature_limit_exceeded` when you are out of signatures. Branch on `code`, not on `detail`, which is localized according to the `Accept-Language` header.\n\nYou can also check your account status from the [Dashboard](https://dashboard.invoicetronic.com), where you can purchase additional operations and/or signatures.\n\n**Please note** that these values are not enforced if you are on the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
+      description: "Retrieve the number of operations (invoices + validations) and signatures left on your account.\n\nWhen `signature_left` is 0, you will receive a `403 Forbidden` response when trying to sign an invoice. Likewise, if `operation_left` is 0, you will receive a `403 Forbidden` response when storing or validating an invoice, or when retrieving incoming invoices. Webhooks can still be created and updated, but no notification is delivered until operations are available again.\n\nThese responses carry a problem details body whose `code` member tells them apart from other `403 Forbidden` responses: `usage_limit_exceeded` when you are out of operations, `signature_limit_exceeded` when you are out of signatures. Branch on `code`, not on `detail`, which is localized according to the `Accept-Language` header.\n\nYou can also check your account status from the [Dashboard](https://dashboard.invoicetronic.com), where you can purchase additional operations and/or signatures.\n\n**Please note** that these values are not enforced if you are on the [Sandbox](https://invoicetronic.com/en/docs/sandbox/)."
       responses:
         '200':
           description: OK
