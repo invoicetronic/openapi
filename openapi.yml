@@ -1782,7 +1782,7 @@ paths:
       tags:
         - webhook
       summary: Get a webhook by id
-      description: "Retrieve a webhook by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `id` in the payload to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Retrieve a webhook by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `Id` in the payload (webhook payloads are PascalCase) to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: id
           in: path
@@ -1804,7 +1804,7 @@ paths:
       tags:
         - webhook
       summary: Delete a webhook by id
-      description: "Delete a webhook subscription by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `id` in the payload to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Delete a webhook subscription by its internal id.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `Id` in the payload (webhook payloads are PascalCase) to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: id
           in: path
@@ -1845,7 +1845,7 @@ paths:
       tags:
         - webhook
       summary: List webhooks
-      description: "Retrieve a paginated list of webhooks. Results can be filtered by company, description, enabled status, events, and URL.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `id` in the payload to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Retrieve a paginated list of webhooks. Results can be filtered by company, description, enabled status, events, and URL.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `Id` in the payload (webhook payloads are PascalCase) to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       parameters:
         - name: company_id
           in: query
@@ -1909,7 +1909,7 @@ paths:
       tags:
         - webhook
       summary: Add a webhook
-      description: "Create a new webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `id` in the payload to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Create a new webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `Id` in the payload (webhook payloads are PascalCase) to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       requestBody:
         content:
           application/json:
@@ -1945,7 +1945,7 @@ paths:
       tags:
         - webhook
       summary: Update a webhook
-      description: "Update an existing webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `id` in the payload to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
+      description: "Update an existing webhook subscription.\n\n**Webhooks** allow you to receive notifications to an external service when specific events occur, such as invoice creation or status updates. You can subscribe to specific events and receive a notification when they occur.\n\nYou can also manage webhooks via the [Dashboard](https://dashboard.invoicetronic.com).\n\nFailed deliveries (any non-2xx response except `410 Gone`, or a network error or timeout) are retried up to 7 times, about 1 minute, 5 minutes, 30 minutes, 2 hours, 6 hours, 12 hours and 24 hours after the previous attempt: 8 attempts over about 45 hours. Delivery is therefore *at least once*: use the event `Id` in the payload (webhook payloads are PascalCase) to discard duplicates. Each request carries an `Invoicetronic-Delivery-Attempt` header with the attempt number. Responding with `410 Gone` disables the webhook and stops the retries.\n\nA webhook that fails continuously for 7 days (no successful delivery in between) is automatically disabled (`enabled` set to `false`) and the account owner is notified by email. To resume deliveries, set `enabled` back to `true` from the Dashboard or via `PATCH /webhook/{id}`.\n\nFor more information, see the **[Webhooks documentation page](https://invoicetronic.com/en/docs/webhooks/)**."
       requestBody:
         content:
           application/json:
@@ -2072,7 +2072,6 @@ components:
           type: string
           format: byte
           nullable: true
-      additionalProperties: false
       x-internal: true
     AltriDatiGestionali:
       type: object
@@ -2091,7 +2090,6 @@ components:
           type: string
           format: date-time
           nullable: true
-      additionalProperties: false
       x-internal: true
     Anagrafica:
       type: object
@@ -2111,7 +2109,6 @@ components:
         CodEORI:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     CedentePrestatore:
       type: object
@@ -2129,7 +2126,6 @@ components:
         RiferimentoAmministrazione:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     CessionarioCommittente:
       type: object
@@ -2142,7 +2138,6 @@ components:
           $ref: '#/components/schemas/StabileOrganizzazione'
         RappresentanteFiscale:
           $ref: '#/components/schemas/RappresentanteFiscaleCessionarioCommittente'
-      additionalProperties: false
       x-internal: true
     CodiceArticolo:
       type: object
@@ -2153,7 +2148,6 @@ components:
         CodiceValore:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     Company:
       required:
@@ -2195,7 +2189,6 @@ components:
           type: string
           description: Name
           example: Mario Rossi Srl
-      additionalProperties: false
       description: A company model.
     Contatti:
       type: object
@@ -2209,7 +2202,6 @@ components:
         Email:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     ContattiTrasmittente:
       type: object
@@ -2220,7 +2212,6 @@ components:
         Email:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiAnagrafici:
       type: object
@@ -2232,7 +2223,6 @@ components:
           nullable: true
         Anagrafica:
           $ref: '#/components/schemas/Anagrafica'
-      additionalProperties: false
       x-internal: true
     DatiAnagraficiCedentePrestatore:
       type: object
@@ -2260,7 +2250,6 @@ components:
         RegimeFiscale:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiAnagraficiCessionarioCommittente:
       type: object
@@ -2272,7 +2261,6 @@ components:
           nullable: true
         Anagrafica:
           $ref: '#/components/schemas/Anagrafica'
-      additionalProperties: false
       x-internal: true
     DatiAnagraficiVettore:
       type: object
@@ -2287,7 +2275,6 @@ components:
         NumeroLicenzaGuida:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiBeniServizi:
       type: object
@@ -2302,7 +2289,6 @@ components:
           items:
             $ref: '#/components/schemas/DatiRiepilogo'
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiBollo:
       type: object
@@ -2314,7 +2300,6 @@ components:
           type: number
           format: double
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiCassaPrevidenziale:
       type: object
@@ -2343,7 +2328,6 @@ components:
         RiferimentoAmministrazione:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiContratto:
       type: object
@@ -2373,7 +2357,6 @@ components:
         CodiceCIG:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiConvenzione:
       type: object
@@ -2403,7 +2386,6 @@ components:
         CodiceCIG:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiDDT:
       type: object
@@ -2420,7 +2402,6 @@ components:
             type: integer
             format: int32
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiFattureCollegate:
       type: object
@@ -2450,7 +2431,6 @@ components:
         CodiceCIG:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiGenerali:
       type: object
@@ -2496,7 +2476,6 @@ components:
           $ref: '#/components/schemas/DatiTrasporto'
         FatturaPrincipale:
           $ref: '#/components/schemas/FatturaPrincipale'
-      additionalProperties: false
       x-internal: true
     DatiGeneraliDocumento:
       type: object
@@ -2546,7 +2525,6 @@ components:
         Art73:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiOrdineAcquisto:
       type: object
@@ -2576,7 +2554,6 @@ components:
         CodiceCIG:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiPagamento:
       type: object
@@ -2589,7 +2566,6 @@ components:
           items:
             $ref: '#/components/schemas/DettaglioPagamento'
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiRicezione:
       type: object
@@ -2619,7 +2595,6 @@ components:
         CodiceCIG:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiRiepilogo:
       type: object
@@ -2650,7 +2625,6 @@ components:
         RiferimentoNormativo:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiRitenuta:
       type: object
@@ -2667,7 +2641,6 @@ components:
         CausalePagamento:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiSAL:
       type: object
@@ -2675,7 +2648,6 @@ components:
         RiferimentoFase:
           type: integer
           format: int32
-      additionalProperties: false
       x-internal: true
     DatiTrasmissione:
       type: object
@@ -2696,7 +2668,6 @@ components:
         PECDestinatario:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiTrasporto:
       type: object
@@ -2744,7 +2715,6 @@ components:
           type: string
           format: date-time
           nullable: true
-      additionalProperties: false
       x-internal: true
     DatiVeicoli:
       type: object
@@ -2756,7 +2726,6 @@ components:
         TotalePercorso:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DettaglioLinee:
       type: object
@@ -2818,7 +2787,6 @@ components:
           items:
             $ref: '#/components/schemas/AltriDatiGestionali'
           nullable: true
-      additionalProperties: false
       x-internal: true
     DettaglioPagamento:
       type: object
@@ -2893,7 +2861,6 @@ components:
         CodicePagamento:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     DocumentData:
       type: object
@@ -2904,7 +2871,6 @@ components:
         date:
           type: string
           format: date-time
-      additionalProperties: false
       x-internal: true
     Error:
       type: object
@@ -2921,7 +2887,6 @@ components:
           type: string
           description: Hint on how to solve the issue.
           nullable: true
-      additionalProperties: false
       description: Validation error from the SDI.
       x-internal: true
     Event:
@@ -3004,7 +2969,6 @@ components:
           type: string
           description: Response payload. It is guaranteed to be encrypted at rest.
           nullable: true
-      additionalProperties: false
       description: An API request log entry.
     FatturaElettronicaBody:
       type: object
@@ -3025,7 +2989,6 @@ components:
           items:
             $ref: '#/components/schemas/Allegati'
           nullable: true
-      additionalProperties: false
       x-internal: true
     FatturaElettronicaHeader:
       type: object
@@ -3043,7 +3006,6 @@ components:
         SoggettoEmittente:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     FatturaOrdinaria:
       type: object
@@ -3058,7 +3020,6 @@ components:
           items:
             $ref: '#/components/schemas/FatturaElettronicaBody'
           nullable: true
-      additionalProperties: false
       x-internal: true
     FatturaPrincipale:
       type: object
@@ -3070,7 +3031,6 @@ components:
           type: string
           format: date-time
           nullable: true
-      additionalProperties: false
       x-internal: true
     IdFiscaleIVA:
       type: object
@@ -3081,7 +3041,6 @@ components:
         IdCodice:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     IdTrasmittente:
       type: object
@@ -3092,7 +3051,6 @@ components:
         IdCodice:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     IndirizzoResa:
       type: object
@@ -3116,7 +3074,6 @@ components:
           type: string
           default: IT
           nullable: true
-      additionalProperties: false
       x-internal: true
     IscrizioneREA:
       type: object
@@ -3137,7 +3094,6 @@ components:
         StatoLiquidazione:
           type: string
           nullable: true
-      additionalProperties: false
       x-internal: true
     Permissions:
       type: object
@@ -3200,7 +3156,6 @@ components:
           type: string
           description: Account status (remaining operations and signatures).
           nullable: true
-      additionalProperties: false
       description: "Permissions of a restricted key, per resource. A missing property means no access to that resource. Each\npermission cannot exceed the one of the main key the restricted key belongs to."
     ProblemDetails:
       type: object
@@ -3228,7 +3183,6 @@ components:
       properties:
         DatiAnagrafici:
           $ref: '#/components/schemas/DatiAnagrafici'
-      additionalProperties: false
       x-internal: true
     RappresentanteFiscaleCessionarioCommittente:
       type: object
@@ -3244,7 +3198,6 @@ components:
           nullable: true
         IdFiscaleIVA:
           $ref: '#/components/schemas/IdFiscaleIVA'
-      additionalProperties: false
       x-internal: true
     Receive:
       required:
@@ -3342,7 +3295,6 @@ components:
           type: string
           description: SDI message id.
           nullable: true
-      additionalProperties: false
       description: A received invoice.
     ScontoMaggiorazione:
       type: object
@@ -3358,7 +3310,6 @@ components:
           type: number
           format: double
           nullable: true
-      additionalProperties: false
       x-internal: true
     SedeCedentePrestatore:
       type: object
@@ -3382,7 +3333,6 @@ components:
           type: string
           default: IT
           nullable: true
-      additionalProperties: false
       x-internal: true
     SedeCessionarioCommittente:
       type: object
@@ -3406,7 +3356,6 @@ components:
           type: string
           default: IT
           nullable: true
-      additionalProperties: false
       x-internal: true
     Send:
       required:
@@ -3523,7 +3472,6 @@ components:
           readOnly: true
         company:
           $ref: '#/components/schemas/Company'
-      additionalProperties: false
       description: A sent invoice.
     SendReduced:
       type: object
@@ -3567,7 +3515,6 @@ components:
           type: string
           description: Current SDI state of the invoice. Reflects the most recent update received from SDI.
           nullable: true
-      additionalProperties: false
       description: 'Reduced Send data for Update responses, containing only the essential fields.'
       x-internal: true
     StabileOrganizzazione:
@@ -3592,7 +3539,6 @@ components:
           type: string
           default: IT
           nullable: true
-      additionalProperties: false
       x-internal: true
     Status:
       type: object
@@ -3611,7 +3557,6 @@ components:
         is_sub_key:
           type: boolean
           description: Whether the current API key is a sub-key (restricted key).
-      additionalProperties: false
       description: Account status with remaining operations and signatures.
     SubKey:
       type: object
@@ -3657,7 +3602,6 @@ components:
           description: When the secrets replaced by the last roll stop working; null when there are none still valid.
           format: date-time
           nullable: true
-      additionalProperties: false
       description: A restricted key. Its secrets are returned only when the key is created or rolled.
     SubKeyRequest:
       required:
@@ -3687,7 +3631,6 @@ components:
             type: string
           description: "Browser origins allowed to call the API with this key (CORS), e.g. `https://app.example.com` or\n`*.example.com`. A key used from a browser is public: keep its permissions and companies minimal."
           nullable: true
-      additionalProperties: false
       description: A restricted key to create.
     SubKeyUpdate:
       required:
@@ -3725,7 +3668,6 @@ components:
           type: integer
           description: 'Row version read with the key, for optimistic concurrency: a stale version fails with 422.'
           format: int32
-      additionalProperties: false
       description: "A restricted key to update. All the editable fields are replaced: an omitted `permissions`,\n`company_ids` or `cors_origins` means none."
     SubKeyWithSecrets:
       type: object
@@ -3779,14 +3721,12 @@ components:
           type: string
           description: Production secret.
           nullable: true
-      additionalProperties: false
       description: "A restricted key with its secrets, returned only when the key is created or rolled. Store them safely: they\ncannot be read again."
     TerzoIntermediarioOSoggettoEmittente:
       type: object
       properties:
         DatiAnagrafici:
           $ref: '#/components/schemas/DatiAnagrafici'
-      additionalProperties: false
       x-internal: true
     Update:
       type: object
@@ -3854,7 +3794,6 @@ components:
           description: Whether the item has been read at least once.
         send:
           $ref: '#/components/schemas/SendReduced'
-      additionalProperties: false
       description: An SDI status update for a sent invoice.
     WebHook:
       required:
@@ -3920,7 +3859,6 @@ components:
           format: date-time
           nullable: true
           readOnly: true
-      additionalProperties: false
       description: A webhook subscription.
     WebHookHistory:
       type: object
@@ -3977,7 +3915,6 @@ components:
           type: boolean
           description: Whether the request was successful.
           readOnly: true
-      additionalProperties: false
       description: Webhook history.
   securitySchemes:
     Basic:
