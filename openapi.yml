@@ -10,7 +10,7 @@ info:
   license:
     name: MIT
     url: https://github.com/invoicetronic/openapi/blob/main/LICENSE
-  version: '1.20.4'
+  version: '1.20.5'
 paths:
   '/company/{id}':
     get:
@@ -3836,7 +3836,7 @@ components:
           description: 'Whether the webhook is enabled. On creation, this is set to `true`.'
         secret:
           type: string
-          description: 'The secret used to generate webhook signatures, only returned on creation. You should store this value securely and validate it on every call, to ensure that the caller is InvoicetronicApi.'
+          description: 'The secret used to generate webhook signatures. It is generated on creation and returned whenever the webhook is read. It cannot be changed: a value sent on update is ignored. Use it to validate the signature of every call, to ensure that the caller is InvoicetronicApi.'
           nullable: true
           example: wh_sec_1a2b3c4d5e6f7g8h9i0j
         description:
@@ -3855,7 +3855,7 @@ components:
             - receive.add
         failure_notified_at:
           type: string
-          description: Timestamp of the last failure notification email sent for this webhook. Set by the notifier service; reset to null on successful delivery.
+          description: Timestamp of the last failure notification email sent for this webhook. Set by the notifier service; reset to null on successful delivery. A value sent on update is ignored.
           format: date-time
           nullable: true
           readOnly: true
